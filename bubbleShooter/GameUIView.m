@@ -139,7 +139,6 @@ static const int kDisappearState = 2;
 // Initialize.
 - (id)initWithCoder:(NSCoder*)coder {
   self = [super initWithCoder:coder];
-  NSLog(@"initWithCoder: %dx%d", (int)self.frame.size.width, (int)self.frame.size.height);
   if (self) {
     self.backgroundColor = [UIColor whiteColor];
     _context = NULL;
@@ -304,7 +303,6 @@ static const int kDisappearState = 2;
     if (validPosition(tx, ty)) {
       _field[fieldIndex(tx, ty)] = _c;
       NSMutableArray* bubbles = [self countBubbles_x:tx y:ty c:_c];
-      NSLog(@"Bubble count:%d", [bubbles count]);
       if ([bubbles count] >= 3) {
         [self eraseBubbles:bubbles];
         [self fallCheck:bubbles];
