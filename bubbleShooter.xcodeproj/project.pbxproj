@@ -19,6 +19,7 @@
 		D154A2931683CA2500A8FCD2 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D154A2911683CA2500A8FCD2 /* MainStoryboard.storyboard */; };
 		D154A2961683CA2500A8FCD2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D154A2951683CA2500A8FCD2 /* ViewController.m */; };
 		D1923789168427490085B568 /* GameUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1923788168427490085B568 /* GameUIView.m */; };
+		D1923790168430670085B568 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = D192378F168430670085B568 /* util.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,8 @@
 		D154A2951683CA2500A8FCD2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		D1923787168427490085B568 /* GameUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameUIView.h; sourceTree = "<group>"; };
 		D1923788168427490085B568 /* GameUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameUIView.m; sourceTree = "<group>"; };
+		D192378E168430670085B568 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
+		D192378F168430670085B568 /* util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = util.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,13 +89,15 @@
 		D154A27F1683CA2500A8FCD2 /* bubbleShooter */ = {
 			isa = PBXGroup;
 			children = (
-				D1923787168427490085B568 /* GameUIView.h */,
-				D1923788168427490085B568 /* GameUIView.m */,
 				D154A2881683CA2500A8FCD2 /* AppDelegate.h */,
 				D154A2891683CA2500A8FCD2 /* AppDelegate.m */,
+				D1923787168427490085B568 /* GameUIView.h */,
+				D1923788168427490085B568 /* GameUIView.m */,
 				D154A2911683CA2500A8FCD2 /* MainStoryboard.storyboard */,
 				D154A2941683CA2500A8FCD2 /* ViewController.h */,
 				D154A2951683CA2500A8FCD2 /* ViewController.m */,
+				D192378E168430670085B568 /* util.h */,
+				D192378F168430670085B568 /* util.m */,
 				D154A2801683CA2500A8FCD2 /* Supporting Files */,
 			);
 			path = bubbleShooter;
@@ -182,6 +187,7 @@
 				D154A28A1683CA2500A8FCD2 /* AppDelegate.m in Sources */,
 				D154A2961683CA2500A8FCD2 /* ViewController.m in Sources */,
 				D1923789168427490085B568 /* GameUIView.m in Sources */,
+				D1923790168430670085B568 /* util.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

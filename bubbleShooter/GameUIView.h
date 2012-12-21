@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-static const int FIELDW = 10;
-static const int FIELDH = 16;
+#import "util.h"
 
 @interface GameUIView : UIView {
   CGContextRef _context;

@@ -7,56 +7,7 @@
 //
 
 #import "GameUIView.h"
-
-
-static const int WIDTH = 320;
-static const int HEIGHT = 460;
-
-static const int W = 32;
-static const int H = W * 1.7320508 / 2;
-static const int R = 16;
-
-const int kColorBubbles = 6;
-
-
-// Bubble color table.
-static const int kBubbleColors[][3] = {
-  { 0, 0, 0 },    // 0: Empty
-  { 255, 0, 0 },  // 1: Red
-  { 0, 255, 0 },  // 2: Green
-  { 0, 0, 255 },  // 3: Blue
-  { 255, 0, 255 },  // 4: Purple
-  { 0, 255, 255 },  // 5: Cyan
-  { 255, 255, 0 },  // 6: Yellow
-};
-
-// Set color.
-void setColor(CGContextRef context, int r, int g, int b) {
-  CGContextSetRGBFillColor(context, r/255.0f, g/255.0f, b/255.0f, 1.0f);
-  CGContextSetRGBStrokeColor(context, r/255.0f, g/255.0f, b/255.0f, 1.0f);
-}
-
-// Fills circle with center position and radius.
-void fillCircle(CGContextRef context, float x, float y, float r) {
-  CGContextFillEllipseInRect(context, CGRectMake(x - r, y - r, r * 2, r * 2));
-}
-
-// Draws bubble with center position and type.
-void drawBubble(CGContextRef context, float x, float y, int type) {
-  int r = kBubbleColors[type][0];
-  int g = kBubbleColors[type][1];
-  int b = kBubbleColors[type][2];
-  setColor(context, r, g, b);
-  fillCircle(context, x, y, R);
-}
-
-int randi(int min, int max) {
-  return arc4random_uniform(max - min) + min;
-}
-
-float randf(float min, float max) {
-  return (((float)arc4random() / 0x100000000) * (max - min)) + min;
-}
+#import "util.h"
 
 
 
@@ -97,38 +48,6 @@ float randf(float min, float max) {
 @end
 
 
-
-
-
-// Returns field index.
-int fieldIndex(int x, int y) {
-  return y * FIELDW + x;
-}
-
-// Adds 6 adjacent positions to the array.
-bool validPosition(int x, int y) {
-  return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
-}
-
-// Adds 6 adjacent positions to the array.
-void addAdjacentPositions(NSMutableArray* seeds, int x, int y) {
-  int ox = x - 1 + (y & 1);
-  int table[][2] = {
-    { ox + 0, y - 1 },
-    { ox + 1, y - 1 },
-    { x - 1, y },
-    { x + 1, y },
-    { ox + 0, y + 1 },
-    { ox + 1, y + 1 },
-  };
-  for (int i = 0; i < 6; ++i) {
-    int xx = table[i][0];
-    int yy = table[i][1];
-    if (validPosition(xx, yy)) {
-      [seeds addObject:[NSNumber numberWithInt:fieldIndex(xx, yy)]];
-    }
-  }
-}
 
 @implementation GameUIView
 
@@ -216,52 +135,6 @@ static const int kDisappearState = 2;
   }
 }
 
-//ライン幅の指定
-- (void)setLineWidth:(float)width {
-  CGContextSetLineWidth(_context, width);
-}
-
-//ラインの描画
-- (void)drawLine_x0:(float)x0 y0:(float)y0 x1:(float)x1 y1:(float)y1 {
-  CGContextSetLineCap(_context, kCGLineCapRound);
-  CGContextMoveToPoint(_context, x0, y0);
-  CGContextAddLineToPoint(_context, x1, y1);
-  CGContextStrokePath(_context);
-}
-
-//ポリラインの描画
-- (void)drawPolyline_x:(float[])x y:(float[])y length:(int)length {
-  CGContextSetLineCap(_context, kCGLineCapRound);
-  CGContextSetLineJoin(_context, kCGLineJoinRound);
-  CGContextMoveToPoint(_context, x[0], y[0]);
-  for (int i=1; i<length; ++i) {
-    CGContextAddLineToPoint(_context, x[i], y[i]);
-  }
-  CGContextStrokePath(_context);
-}
-
-//四角形の描画
-- (void)drawRect_x:(float)x y:(float)y w:(float)w h:(float)h {
-  CGContextMoveToPoint(_context, x, y);
-  CGContextAddLineToPoint(_context, x+w, y);
-  CGContextAddLineToPoint(_context, x+w, y+h);
-  CGContextAddLineToPoint(_context, x, y+h);
-  CGContextAddLineToPoint(_context, x, y);
-  CGContextAddLineToPoint(_context, x+w, y);
-  CGContextStrokePath(_context);
-}
-
-//四角形の塗り潰し
-- (void)fillRect_x:(float)x y:(float)y w:(float)w h:(float)h {
-  CGContextFillRect(_context,CGRectMake(x, y, w, h));
-}
-
-// Draws circle with center position and radius.
-- (void)drawCircle_x:(float)x y:(float)y r:(float)r {
-  CGContextAddEllipseInRect(_context, CGRectMake(x - r, y - r, r * 2, r * 2));
-  CGContextStrokePath(_context);
-}
-
 // On tick event.
 - (void)onTick:(NSTimer*)timer {
   switch (_state) {
@@ -276,12 +149,12 @@ static const int kDisappearState = 2;
         _vx = -_vx;
       if (_y < W / 2)
         _vy = -_vy;
-      
-      [self hitCheck];
-      
       if (_y > HEIGHT + W / 2) {
         [self initializeBubble];
+        break;
       }
+      
+      [self hitCheck];
       break;
   }
 
@@ -292,84 +165,28 @@ static const int kDisappearState = 2;
 }
 
 // Check bubble hits other bubble.
-- (void)hitCheck {
-  int result[2];
-  if ([self hit_x:_x y:_y ox:-R oy:-R result:result] ||
-      [self hit_x:_x y:_y ox:+R oy:-R result:result] ||
-      [self hit_x:_x y:_y ox:-R oy:+R result:result] ||
-      [self hit_x:_x y:_y ox:+R oy:+R result:result]) {
-    _state = kDisappearState;
-    int tx = result[0], ty = result[1];
+- (bool)hitCheck {
+  int tx, ty;
+  if (hitBubble(_field, _x, _y, -R, -R, &tx, &ty) ||
+      hitBubble(_field, _x, _y, +R, -R, &tx, &ty) ||
+      hitBubble(_field, _x, _y, -R, +R, &tx, &ty) ||
+      hitBubble(_field, _x, _y, +R, +R, &tx, &ty)) {
     if (validPosition(tx, ty)) {
       _field[fieldIndex(tx, ty)] = _c;
-      NSMutableArray* bubbles = [self countBubbles_x:tx y:ty c:_c];
+      NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c);
       if ([bubbles count] >= 3) {
         [self eraseBubbles:bubbles];
         [self fallCheck:bubbles];
+        _state = kDisappearState;
+      } else {
+        [self initializeBubble];
       }
+    } else {
+      [self initializeBubble];
     }
-    [self initializeBubble];
+    return true;
   }
-}
-
-// Check bubble hits other bubble.
-- (bool)hit_x: (int)x y:(int)y ox:(int)ox oy:(int)oy result:(int*)result {
-  if (x + ox < 0 || y + oy < 0)
-    return false;
-  int by = (y + oy - (W - H) / 2) / H;
-  if (by >= FIELDH)
-    return false;
-  int bx = (x + oy - (by & 1) * W / 2) / W;
-  if (bx >= FIELDW)
-    return false;
-  if (_field[fieldIndex(bx, by)] == 0)
-    return false;
-
-  int target_x = bx * W + (by & 1) * W / 2 + W / 2;
-  int target_y = by * H + W / 2;
-  int dx = x - target_x;
-  int dy = y - target_y;
-  if (dx * dx + dy * dy > 4 * R * R)
-    return false;
-
-  // Hit a bubble.
-  int tx = bx, ty = by;
-  if (abs(dy) * sqrt(3) < abs(dx)) {
-    tx += (dx >= 0) ? +1 : -1;
-  } else {
-    ty += (dy >= 0) ? +1 : -1;
-    tx += (dx >= 0) ? 0 : -1;
-    if (by & 1)
-      ++tx;
-  }
-  result[0] = tx;
-  result[1] = ty;
-  return true;
-}
-
-// Counts bubbles connected more than 2.
-- (NSMutableArray*)countBubbles_x:(int)x y:(int)y c:(int)c {
-  bool checked[FIELDW * FIELDH];
-  for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:1];
-  [seeds addObject:[NSNumber numberWithInt:fieldIndex(x, y)]];
-
-  NSMutableArray* erasedBubbles = [[NSMutableArray alloc] init];
-  int n = 0;
-  while ([seeds count] > 0) {
-    int position = [[seeds objectAtIndex:[seeds count] - 1] intValue];
-    [seeds removeLastObject];
-    int x = position % FIELDW;
-    int y = position / FIELDW;
-    if (!validPosition(x, y) || _field[position] != c || checked[position])
-      continue;
-
-    [erasedBubbles addObject:[NSNumber numberWithInt:position]];
-    checked[position] = true;
-    ++n;
-    addAdjacentPositions(seeds, x, y);
-  }
-  return erasedBubbles;
+  return false;
 }
 
 // Erase bubbles.
@@ -443,10 +260,7 @@ static const int kDisappearState = 2;
   
   // Clears background.
   setColor(_context, 0, 0, 64);
-  [self fillRect_x:0
-                 y:0
-                 w:self.frame.size.width
-                 h:self.frame.size.height];
+  fillRect(_context, 0, 0, self.frame.size.width, self.frame.size.height);
 
   [self renderField];
   [self renderPlayer];
