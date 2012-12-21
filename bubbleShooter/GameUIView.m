@@ -20,14 +20,14 @@ const int kColorBubbles = 6;
 
 
 // Bubble color table.
-static const int kBubbleColors[] = {
-  0, 0, 0,    // 0: Empty
-  255, 0, 0,  // 1: Red
-  0, 255, 0,  // 2: Green
-  0, 0, 255,  // 3: Blue
-  255, 0, 255,  // 4: Purple
-  0, 255, 255,  // 5: Cyan
-  255, 255, 0,  // 6: Yellow
+static const int kBubbleColors[][3] = {
+  { 0, 0, 0 },    // 0: Empty
+  { 255, 0, 0 },  // 1: Red
+  { 0, 255, 0 },  // 2: Green
+  { 0, 0, 255 },  // 3: Blue
+  { 255, 0, 255 },  // 4: Purple
+  { 0, 255, 255 },  // 5: Cyan
+  { 255, 255, 0 },  // 6: Yellow
 };
 
 // Set color.
@@ -43,9 +43,9 @@ void fillCircle(CGContextRef context, float x, float y, float r) {
 
 // Draws bubble with center position and type.
 void drawBubble(CGContextRef context, float x, float y, int type) {
-  int r = kBubbleColors[type * 3 + 0];
-  int g = kBubbleColors[type * 3 + 1];
-  int b = kBubbleColors[type * 3 + 2];
+  int r = kBubbleColors[type][0];
+  int g = kBubbleColors[type][1];
+  int b = kBubbleColors[type][2];
   setColor(context, r, g, b);
   fillCircle(context, x, y, R);
 }
