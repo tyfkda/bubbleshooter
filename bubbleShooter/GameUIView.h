@@ -19,6 +19,7 @@
   float _x, _y;  // Bubble position.
   int _c;        // Bubble type.
   float _vx, _vy;  // Bubble velocity.
+  int _nextc;      // Next bubble type.
 }
 
 @end

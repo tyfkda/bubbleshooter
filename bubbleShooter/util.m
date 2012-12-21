@@ -129,6 +129,8 @@ void addAdjacentPositions(NSMutableArray* seeds, int x, int y) {
 }
 
 void drawBubble(CGContextRef context, float x, float y, int type) {
+  if (type == 0)
+    return;
   int r = kBubbleColors[type][0];
   int g = kBubbleColors[type][1];
   int b = kBubbleColors[type][2];

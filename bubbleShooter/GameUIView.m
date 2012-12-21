@@ -7,53 +7,16 @@
 //
 
 #import "GameUIView.h"
+#import "Effect.h"
 #import "util.h"
-
-
-
-@interface Effect : NSObject {
-  float _x, _y;
-  float _vx, _vy;
-  int _c;
-}
--(void) initialize: (int)x y:(int)y c:(int)c;
--(bool) update;
--(void) render: (CGContextRef)context;
-@end
-
-
-@implementation Effect
-
--(void) initialize:(int)x y:(int)y c:(int)c {
-  _x = x;
-  _y = y;
-  _c = c;
-  _vx = randf(-4, 4);
-  _vy = randf(-4, 0);
-}
-
--(bool) update {
-  _vy += 0.25;
-  _x += _vx;
-  _y += _vy;
-  if (_y >= HEIGHT + R)
-    return false;
-  return true;
-}
-
--(void) render: (CGContextRef)context {
-  drawBubble(context, _x, _y, _c);
-}
-
-@end
-
-
 
 @implementation GameUIView
 
-static const int kIdleState = 0;
-static const int kShootState = 1;
-static const int kDisappearState = 2;
+// Player state.
+enum {
+  kIdleState = 0,
+  kShootState = 1,
+};
 
 // Initialize.
 - (id)initWithCoder:(NSCoder*)coder {
@@ -75,16 +38,14 @@ static const int kDisappearState = 2;
 
 // Initialize.
 - (void)initialize {
-  _timer=[NSTimer scheduledTimerWithTimeInterval:1.0f/60.0f
-                                          target:self
-                                        selector:@selector(onTick:)
-                                        userInfo:nil
-                                         repeats:YES];//retain必要なし
+  _timer = [NSTimer scheduledTimerWithTimeInterval:1.0f/60.0f
+                                            target:self
+                                          selector:@selector(onTick:)
+                                          userInfo:nil
+                                           repeats:YES];  // No need to retain.
 
   // Initializes field.
-  for (int i = 0; i < FIELDW * FIELDH; ++i) {
-    _field[i] = 0;
-  }
+  for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
   for (int i = 0; i < FIELDH / 2; ++i) {
     for (int j = 0; j < FIELDW; ++j) {
       _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
@@ -92,17 +53,23 @@ static const int kDisappearState = 2;
   }
 
   // Initializes bubble.
+  _nextc = [self chooseNextBubble];
   [self initializeBubble];
   
   _effects = [[NSMutableArray alloc] init];
+}
+
+- (int)chooseNextBubble {
+  return randi(1, kColorBubbles + 1);
 }
 
 - (void)initializeBubble {
   _state = kIdleState;
   _x = WIDTH / 2;
   _y = H * (FIELDH - 1) + W / 2;
-  _c = randi(1, kColorBubbles + 1);
+  _c = _nextc;
   _vx = _vy = 0;
+  _nextc = [self chooseNextBubble];
 }
 
 // Sets context.
@@ -167,26 +134,26 @@ static const int kDisappearState = 2;
 // Check bubble hits other bubble.
 - (bool)hitCheck {
   int tx, ty;
-  if (hitBubble(_field, _x, _y, -R, -R, &tx, &ty) ||
-      hitBubble(_field, _x, _y, +R, -R, &tx, &ty) ||
-      hitBubble(_field, _x, _y, -R, +R, &tx, &ty) ||
-      hitBubble(_field, _x, _y, +R, +R, &tx, &ty)) {
-    if (validPosition(tx, ty)) {
-      _field[fieldIndex(tx, ty)] = _c;
-      NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c);
-      if ([bubbles count] >= 3) {
-        [self eraseBubbles:bubbles];
-        [self fallCheck:bubbles];
-        _state = kDisappearState;
-      } else {
-        [self initializeBubble];
-      }
-    } else {
-      [self initializeBubble];
-    }
+  if (!hitBubble(_field, _x, _y, -R, -R, &tx, &ty) &&
+      !hitBubble(_field, _x, _y, +R, -R, &tx, &ty) &&
+      !hitBubble(_field, _x, _y, -R, +R, &tx, &ty) &&
+      !hitBubble(_field, _x, _y, +R, +R, &tx, &ty))
+    return false;
+  
+  if (!validPosition(tx, ty) || _field[fieldIndex(tx, ty)] != 0) {
+    NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
+    [self initializeBubble];
     return true;
   }
-  return false;
+
+  _field[fieldIndex(tx, ty)] = _c;
+  NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c);
+  if ([bubbles count] >= 3) {
+    [self eraseBubbles:bubbles];
+    [self fallCheck:bubbles];
+  }
+  [self initializeBubble];
+  return true;
 }
 
 // Erase bubbles.
@@ -199,6 +166,7 @@ static const int kDisappearState = 2;
 
 // Checks bubbles fall.
 - (void)fallCheck:(NSMutableArray*)erasedBubbles {
+  int cutoff_count = 0;
   for (int i = 0; i < [erasedBubbles count]; ++i) {
     int position = [[erasedBubbles objectAtIndex:i] intValue];
     int x = position % FIELDW;
@@ -206,13 +174,16 @@ static const int kDisappearState = 2;
     NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
     addAdjacentPositions(seeds, x, y);
     for (int j = 0; j < [seeds count]; ++j) {
-      [self fallCheckSub:[[seeds objectAtIndex:j] intValue]];
+      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue]];
     }
+  }
+  if (cutoff_count > 0) {
+    NSLog(@"Cutoff! %d", cutoff_count);
   }
 }
 
 // Checks bubbles fall.
-- (void)fallCheckSub:(int)seed {
+- (int)fallCheckSub:(int)seed {
   bool checked[FIELDW * FIELDH];
   for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
   
@@ -229,12 +200,13 @@ static const int kDisappearState = 2;
     checked[position] = true;
     if (y == 0) {
       // Not fall these bubbles because sticked with ceil.
-      return;
+      return 0;
     }
     addAdjacentPositions(seeds, x, y);
   }
 
   // Not sticked with ceil. Fall all bubbles.
+  int cutoff_count = 0;
   for (int i = 0; i < [seeds count]; ++i) {
     int position = [[seeds objectAtIndex:i] intValue];
     int x = position % FIELDW;
@@ -250,7 +222,9 @@ static const int kDisappearState = 2;
     
     checked[position] = false;
     _field[position] = 0;
+    ++cutoff_count;
   }
+  return cutoff_count;
 }
 
 // Draw.
@@ -291,6 +265,7 @@ static const int kDisappearState = 2;
       drawBubble(_context, _x, _y, _c);
       break;
   }
+  drawBubble(_context, self.frame.size.width / 2 - R * 2, self.frame.size.height - R, _nextc);
 }
 
 // Renders effects.
