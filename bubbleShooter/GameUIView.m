@@ -50,6 +50,13 @@ void drawBubble(CGContextRef context, float x, float y, int type) {
   fillCircle(context, x, y, R);
 }
 
+int randi(int min, int max) {
+  return arc4random_uniform(max - min) + min;
+}
+
+float randf(float min, float max) {
+  return (((float)arc4random() / 0x100000000) * (max - min)) + min;
+}
 
 
 
@@ -70,8 +77,8 @@ void drawBubble(CGContextRef context, float x, float y, int type) {
   _x = x;
   _y = y;
   _c = c;
-  _vx = (((float)arc4random() / 0x100000000) * 8) - 4;
-  _vy = (((float)arc4random() / 0x100000000) * 4) - 4;
+  _vx = randf(-4, 4);
+  _vy = randf(-4, 0);
 }
 
 -(bool) update {
@@ -162,7 +169,7 @@ static const int kDisappearState = 2;
   }
   for (int i = 0; i < FIELDH / 2; ++i) {
     for (int j = 0; j < FIELDW; ++j) {
-      _field[fieldIndex(j, i)] = arc4random_uniform(kColorBubbles) + 1;
+      _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
     }
   }
 
@@ -176,7 +183,7 @@ static const int kDisappearState = 2;
   _state = kIdleState;
   _x = WIDTH / 2;
   _y = H * (FIELDH - 1) + W / 2;
-  _c = arc4random_uniform(kColorBubbles) + 1;
+  _c = randi(1, kColorBubbles + 1);
   _vx = _vy = 0;
 }
 
