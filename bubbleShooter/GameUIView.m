@@ -50,9 +50,7 @@ const float BUBBLE_VELOCITY = 12;
   // Initializes field.
   for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
   for (int i = 0; i < FIELDH / 2; ++i) {
-    for (int j = 0; j < FIELDW - (i & 1); ++j) {
-      _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
-    }
+    [self setRandomLine: i];
   }
 
   // Initializes bubble.
@@ -63,7 +61,19 @@ const float BUBBLE_VELOCITY = 12;
   _score = 0;
   _time = 0;
   _scrolly = -3 * H * 1024;
-  _scrollSpeed = 1024 / (2 * 60);
+  _scrollSpeed = 1024 / (2 * 60) * 4;
+}
+
+- (void)setRandomLine: (int)y {
+  for (int x = 0; x < FIELDW - (y & 1); ++x) {
+    int c;
+    if (randi(0, 65536) < 65536 / 30) {
+      c = 7;  // Gray
+    } else {
+      c = randi(1, kColorBubbles + 1);
+    }
+    _field[fieldIndex(x, y)] = c;
+  }
 }
 
 - (int)chooseNextBubble {
@@ -111,10 +121,8 @@ const float BUBBLE_VELOCITY = 12;
     for (int i = FIELDW * FIELDH; --i >= FIELDW * 2; ) {
       _field[i] = _field[i - FIELDW * 2];
     }
-    for (int i = 0; i < FIELDH / 5; ++i) {
-      for (int j = 0; j < FIELDW - (i & 1); ++j) {
-        _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
-      }
+    for (int y = 0; y < 2; ++y) {
+      [self setRandomLine: y];
     }
     
     if ([self isGameOver])
