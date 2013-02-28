@@ -246,7 +246,15 @@ find:
 - (void)eraseBubbles:(NSMutableArray*)bubbles {
   for (int i = 0; i < [bubbles count]; ++i) {
     int position = [[bubbles objectAtIndex:i] intValue];
+    int c = _field[position];
     _field[position] = 0;
+
+    int x = position % FIELDW, y = position / FIELDW;
+    int xx = x * W + (y & 1) * R + R + FIELDX;
+    int yy = y * H + R + _scrolly / 1024 + FIELDY;
+    DisappearEffect* effect = [[DisappearEffect alloc] init];
+    [effect initialize: xx y:yy c:c r:R];
+    [_effects addObject:effect];
   }
 }
 
@@ -303,7 +311,7 @@ find:
 
     int xx = x * W + (y & 1) * W / 2 + W / 2;
     int yy = y * H + W / 2;
-    Effect* effect = [[Effect alloc] init];
+    FallEffect* effect = [[FallEffect alloc] init];
     [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position]];
     [_effects addObject:effect];
     

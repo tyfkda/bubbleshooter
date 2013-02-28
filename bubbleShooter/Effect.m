@@ -10,7 +10,39 @@
 #import "util.h"
 
 @implementation Effect
+-(bool) update {
+  return false;
+}
 
+-(void) render: (CGContextRef)context {
+}
+@end
+
+@implementation DisappearEffect
+-(void) initialize:(int)x y:(int)y c:(int)c r:(int)r {
+  _x = x;
+  _y = y;
+  _c = c;
+  _r = r;
+}
+
+-(bool) update {
+  _r -= 2;
+  if (_r <= 0)
+    return false;
+  return true;
+}
+
+-(void) render: (CGContextRef)context {
+  int r = kBubbleColors[_c][0];
+  int g = kBubbleColors[_c][1];
+  int b = kBubbleColors[_c][2];
+  setColor(context, r, g, b);
+  fillCircle(context, _x, _y, _r);
+}
+@end
+
+@implementation FallEffect
 -(void) initialize:(int)x y:(int)y c:(int)c {
   _x = x;
   _y = y;
@@ -31,7 +63,4 @@
 -(void) render: (CGContextRef)context {
   drawBubble(context, _x, _y, _c);
 }
-
 @end
-
-

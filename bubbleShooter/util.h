@@ -43,6 +43,8 @@ void fillCircle(CGContextRef context, float x, float y, float r);
 ////////////////////////////////////////////////////////////////////
 // Application specific utility functions
 
+extern const int kBubbleColors[][3];
+
 // Returns field index.
 int fieldIndex(int x, int y);
 

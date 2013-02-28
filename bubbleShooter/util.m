@@ -9,7 +9,7 @@
 #import "util.h"
 
 // Bubble color table.
-static const int kBubbleColors[][3] = {
+const int kBubbleColors[][3] = {
   { 0, 0, 0 },    // 0: Empty
   { 255, 0, 0 },  // 1: Red
   { 0, 255, 0 },  // 2: Green

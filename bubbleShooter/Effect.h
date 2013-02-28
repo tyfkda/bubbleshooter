@@ -8,7 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Effect : NSObject {
+@interface Effect : NSObject
+-(bool) update;
+-(void) render: (CGContextRef)context;
+@end
+
+@interface DisappearEffect : Effect {
+  float _x, _y;
+  int _c;
+  int _r;
+}
+-(void) initialize: (int)x y:(int)y c:(int)c r:(int)r;
+-(bool) update;
+-(void) render: (CGContextRef)context;
+@end
+
+@interface FallEffect : Effect {
   float _x, _y;
   float _vx, _vy;
   int _c;
