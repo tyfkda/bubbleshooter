@@ -61,7 +61,7 @@ bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* p
   int target_y = by * H + W / 2;
   int dx = x - target_x;
   int dy = y - target_y;
-  if (dx * dx + dy * dy > (R + radius) * (R + radius))
+  if (dx * dx + dy * dy > radius * radius)
     return false;
   
   // Hit a bubble.
@@ -79,7 +79,7 @@ bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* p
   return true;
 }
 
-NSMutableArray* countBubbles(int* field, int x, int y, int c) {
+NSMutableArray* countBubbles(int* field, int x, int y, int c, int miny) {
   bool checked[FIELDW * FIELDH];
   for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
   NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:1];
@@ -92,7 +92,7 @@ NSMutableArray* countBubbles(int* field, int x, int y, int c) {
     [seeds removeLastObject];
     int x = position % FIELDW;
     int y = position / FIELDW;
-    if (!validPosition(x, y) || field[position] != c || checked[position])
+    if (y < miny || !validPosition(x, y) || field[position] != c || checked[position])
       continue;
     
     [erasedBubbles addObject:[NSNumber numberWithInt:position]];

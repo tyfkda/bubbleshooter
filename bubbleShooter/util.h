@@ -23,7 +23,7 @@ static const int FIELDX = 0;
 static const int FIELDY = 14;
 
 // Number of bubble colors.
-static const int kColorBubbles = 6;
+static const int kColorBubbles = 4;  //6;
 
 // Returns random integer.
 int randi(int min, int max);
@@ -55,7 +55,7 @@ bool validPosition(int x, int y);
 bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* px, int* py);
 
 // Counts same color bubbles.
-NSMutableArray* countBubbles(int* field, int x, int y, int c);
+NSMutableArray* countBubbles(int* field, int x, int y, int c, int miny);
 
 // Adds 6 adjacent positions to the array.
 void addAdjacentPositions(NSMutableArray* seeds, int x, int y);

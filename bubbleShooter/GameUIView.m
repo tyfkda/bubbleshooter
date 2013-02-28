@@ -19,7 +19,7 @@ enum {
   kGameOver,
 };
 
-const float BUBBLE_VELOCITY = 8;
+const float BUBBLE_VELOCITY = 12;
 
 // Initialize.
 - (id)initWithCoder:(NSCoder*)coder {
@@ -207,7 +207,7 @@ const float BUBBLE_VELOCITY = 8;
   int tx, ty;
   for (int by = ((int)y - R - 2 * R) / H; by <= ((int)y + R - 2 * R) / H; ++by) {
     for (int bx = ((int)_x - R - (by & 1) * R) / W; bx <= ((int)_x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(_field, bx, by, _x, y, R, &tx, &ty))
+      if (hitFieldBubble(_field, bx, by, _x, y, R + R - 4, &tx, &ty))
         goto find;
     }
   }
@@ -221,7 +221,8 @@ find:
   }
 
   _field[fieldIndex(tx, ty)] = _c;
-  NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c);
+  int miny = -_scrolly / (1024 * H);
+  NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c, miny);
   int connect_count = [bubbles count];
   if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
