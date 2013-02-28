@@ -20,8 +20,12 @@
   int _c;        // Bubble type.
   float _vx, _vy;  // Bubble velocity.
   int _nextc;      // Next bubble type.
+  int _score;    // Score.
+  int _time;     // Time.
 }
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
 @property (weak, nonatomic) IBOutlet UIButton *clearButton;
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
 @end

@@ -61,6 +61,8 @@ const float BUBBLE_VELOCITY = 8;
   [self initializeBubble];
   
   _effects = [[NSMutableArray alloc] init];
+  _score = 0;
+  _time = 0;
 }
 
 - (int)chooseNextBubble {
@@ -115,10 +117,10 @@ const float BUBBLE_VELOCITY = 8;
       break;
     case kIdleState:
     {
-      float dx = pos.x - _x;
-      float dy = pos.y - _y;
+      float dx = (pos.x - FIELDX) - _x;
+      float dy = (pos.y - FIELDY) - _y;
       const int tan5 = 87;
-      if (dy < 0 && 1000 * abs(dy) / abs(dx) >= tan5) {
+      if (dy < 0 && (dx == 0 || 1000 * abs(dy) / abs(dx) >= tan5)) {
         float l = sqrt(dx * dx + dy * dy);
         _vx = dx * BUBBLE_VELOCITY / l;
         _vy = dy * BUBBLE_VELOCITY / l;
@@ -134,8 +136,10 @@ const float BUBBLE_VELOCITY = 8;
     default:
       break;
     case kIdleState:
+      _time += 1;
       break;
     case kShootState:
+      _time += 1;
       _x += _vx;
       _y += _vy;
       if (_x < W / 2 || _x > WIDTH - W / 2)
@@ -187,9 +191,11 @@ find:
 
   _field[fieldIndex(tx, ty)] = _c;
   NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c);
-  if ([bubbles count] >= 3) {
+  int connect_count = [bubbles count];
+  if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
-    [self fallCheck:bubbles];
+    int cutoff_count = [self fallCheck:bubbles];
+    _score += connect_count * 10 + cutoff_count * 100;
   }
   [self initializeBubble];
   return true;
@@ -225,7 +231,7 @@ find:
 }
 
 // Checks bubbles fall.
-- (void)fallCheck:(NSMutableArray*)erasedBubbles {
+- (int)fallCheck:(NSMutableArray*)erasedBubbles {
   int cutoff_count = 0;
   for (int i = 0; i < [erasedBubbles count]; ++i) {
     int position = [[erasedBubbles objectAtIndex:i] intValue];
@@ -240,6 +246,7 @@ find:
   if (cutoff_count > 0) {
     NSLog(@"Cutoff! %d", cutoff_count);
   }
+  return cutoff_count;
 }
 
 // Checks bubbles fall.
@@ -277,7 +284,7 @@ find:
     int xx = x * W + (y & 1) * W / 2 + W / 2;
     int yy = y * H + W / 2;
     Effect* effect = [[Effect alloc] init];
-    [effect initialize: xx y:yy c:_field[position]];
+    [effect initialize: (xx + FIELDX) y:(yy + FIELDY) c:_field[position]];
     [_effects addObject:effect];
     
     checked[position] = false;
@@ -301,14 +308,16 @@ find:
     [self renderPlayer];
   }
   [self renderEffects];
+  [self renderScore];
+  [self renderTime];
 }
 
 // Renders field.
 - (void)renderField: (bool) beGray {
   for (int i = 0; i < FIELDH; ++i) {
-    int y = i * H + R;
+    int y = i * H + R + FIELDY;
     for (int j = 0; j < FIELDW - (i & 1); ++j) {
-      int x = j * W + (i & 1) * R + R;
+      int x = j * W + (i & 1) * R + R + FIELDX;
       int type = _field[fieldIndex(j, i)];
       if (type > 0) {
         if (beGray) {
@@ -327,10 +336,10 @@ find:
       break;
     case kIdleState:
     case kShootState:
-      drawBubble(_context, _x, _y, _c);
+      drawBubble(_context, _x + FIELDX, _y + FIELDY, _c);
       break;
   }
-  drawBubble(_context, self.frame.size.width / 2 - R * 2, self.frame.size.height - R, _nextc);
+  drawBubble(_context, self.frame.size.width / 2 - R * 2 + FIELDX, self.frame.size.height - R + FIELDY, _nextc);
 }
 
 // Renders effects.
@@ -339,6 +348,19 @@ find:
     Effect* effect = [_effects objectAtIndex:i];
     [effect render: _context];
   }
+}
+
+// Renders score.
+- (void)renderScore {
+  _scoreLabel.text = [NSString stringWithFormat : @"%d", _score];
+}
+
+// Renders time.
+- (void)renderTime {
+  char c = _time % 60 < 30 ? ':' : ' ';
+  int sec = _time / 60;
+  int min = _time / 3600;
+  _timeLabel.text = [NSString stringWithFormat : @"%2d%c%02d", min, c, sec];
 }
 
 // Updates effects.

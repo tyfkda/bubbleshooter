@@ -87,17 +87,56 @@
                                     <segue destination="6cf-I3-oEv" kind="unwind" unwindAction="returnToTitleGameFinish:" id="iOh-0n-WGV"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Score" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo8-6B-6MP">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sSQ-Me-owM">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="2IV-gV-myz"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="--" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FIX-A7-fX9">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="J2q-SO-DdM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Time" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KVu-fj-7jN">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="42" id="J7y-E7-Mhg"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.25098039215686274" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="7Qn-U2-Sg3" secondAttribute="bottom" constant="121" id="LBk-ua-6rN"/>
+                            <constraint firstItem="FIX-A7-fX9" firstAttribute="baseline" secondItem="KVu-fj-7jN" secondAttribute="baseline" type="default" id="FhO-sr-hef"/>
+                            <constraint firstItem="KVu-fj-7jN" firstAttribute="top" secondItem="Hvd-49-6Vv" secondAttribute="top" constant="-5" id="Mab-H0-XDw"/>
+                            <constraint firstAttribute="bottom" secondItem="7Qn-U2-Sg3" secondAttribute="bottom" constant="121" id="MbD-6v-h2n"/>
                             <constraint firstItem="Ev1-wQ-WrI" firstAttribute="baseline" secondItem="7Qn-U2-Sg3" secondAttribute="baseline" type="default" id="Q27-sX-oyw"/>
-                            <constraint firstItem="7Qn-U2-Sg3" firstAttribute="centerX" secondItem="Hvd-49-6Vv" secondAttribute="centerX" type="default" id="ekz-b9-uod"/>
+                            <constraint firstItem="sSQ-Me-owM" firstAttribute="trailing" secondItem="Hvd-49-6Vv" secondAttribute="trailing" type="default" id="R61-0q-48A"/>
+                            <constraint firstItem="FIX-A7-fX9" firstAttribute="baseline" secondItem="jo8-6B-6MP" secondAttribute="baseline" type="default" id="czl-Z9-IMe"/>
+                            <constraint firstItem="KVu-fj-7jN" firstAttribute="leading" secondItem="Hvd-49-6Vv" secondAttribute="leading" type="default" id="hV2-Fa-Vuk"/>
+                            <constraint firstItem="7Qn-U2-Sg3" firstAttribute="centerX" secondItem="Hvd-49-6Vv" secondAttribute="centerX" type="default" id="iDN-dQ-uD1"/>
                             <constraint firstItem="Ev1-wQ-WrI" firstAttribute="leading" secondItem="7Qn-U2-Sg3" secondAttribute="leading" type="default" id="s1V-hm-MrG"/>
+                            <constraint firstItem="sSQ-Me-owM" firstAttribute="baseline" secondItem="jo8-6B-6MP" secondAttribute="baseline" type="default" id="vbl-GL-tIc"/>
+                            <constraint firstItem="sSQ-Me-owM" firstAttribute="leading" secondItem="jo8-6B-6MP" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="yiW-8J-8A4"/>
+                            <constraint firstItem="FIX-A7-fX9" firstAttribute="leading" secondItem="KVu-fj-7jN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="zXC-o1-DbN"/>
                         </constraints>
                         <connections>
                             <outlet property="backButton" destination="7Qn-U2-Sg3" id="Ie9-rv-HJe"/>
                             <outlet property="clearButton" destination="Ev1-wQ-WrI" id="wEZ-gd-xo8"/>
+                            <outlet property="scoreLabel" destination="sSQ-Me-owM" id="dSw-kV-gjr"/>
+                            <outlet property="timeLabel" destination="FIX-A7-fX9" id="Ysq-fZ-Rp5"/>
                         </connections>
                     </view>
                 </viewController>

@@ -18,7 +18,9 @@ static const int H = W * 1.7320508 / 2;
 static const int R = 16;
 
 static const int FIELDW = 10;
-static const int FIELDH = 16;
+static const int FIELDH = 15;
+static const int FIELDX = 0;
+static const int FIELDY = 14;
 
 // Number of bubble colors.
 static const int kColorBubbles = 6;
