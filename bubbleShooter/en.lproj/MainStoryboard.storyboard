@@ -71,22 +71,6 @@
                                     <segue destination="6cf-I3-oEv" kind="unwind" unwindAction="returnToTitleGameOver:" id="lg0-uG-xCy"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ev1-wQ-WrI">
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="105" id="gfc-dg-fVd"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Game Clear!">
-                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <state key="highlighted">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="6cf-I3-oEv" kind="unwind" unwindAction="returnToTitleGameFinish:" id="iOh-0n-WGV"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Score" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo8-6B-6MP">
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -122,19 +106,16 @@
                             <constraint firstItem="FIX-A7-fX9" firstAttribute="baseline" secondItem="KVu-fj-7jN" secondAttribute="baseline" type="default" id="FhO-sr-hef"/>
                             <constraint firstItem="KVu-fj-7jN" firstAttribute="top" secondItem="Hvd-49-6Vv" secondAttribute="top" constant="-5" id="Mab-H0-XDw"/>
                             <constraint firstAttribute="bottom" secondItem="7Qn-U2-Sg3" secondAttribute="bottom" constant="121" id="MbD-6v-h2n"/>
-                            <constraint firstItem="Ev1-wQ-WrI" firstAttribute="baseline" secondItem="7Qn-U2-Sg3" secondAttribute="baseline" type="default" id="Q27-sX-oyw"/>
                             <constraint firstItem="sSQ-Me-owM" firstAttribute="trailing" secondItem="Hvd-49-6Vv" secondAttribute="trailing" type="default" id="R61-0q-48A"/>
                             <constraint firstItem="FIX-A7-fX9" firstAttribute="baseline" secondItem="jo8-6B-6MP" secondAttribute="baseline" type="default" id="czl-Z9-IMe"/>
                             <constraint firstItem="KVu-fj-7jN" firstAttribute="leading" secondItem="Hvd-49-6Vv" secondAttribute="leading" type="default" id="hV2-Fa-Vuk"/>
                             <constraint firstItem="7Qn-U2-Sg3" firstAttribute="centerX" secondItem="Hvd-49-6Vv" secondAttribute="centerX" type="default" id="iDN-dQ-uD1"/>
-                            <constraint firstItem="Ev1-wQ-WrI" firstAttribute="leading" secondItem="7Qn-U2-Sg3" secondAttribute="leading" type="default" id="s1V-hm-MrG"/>
                             <constraint firstItem="sSQ-Me-owM" firstAttribute="baseline" secondItem="jo8-6B-6MP" secondAttribute="baseline" type="default" id="vbl-GL-tIc"/>
                             <constraint firstItem="sSQ-Me-owM" firstAttribute="leading" secondItem="jo8-6B-6MP" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="yiW-8J-8A4"/>
                             <constraint firstItem="FIX-A7-fX9" firstAttribute="leading" secondItem="KVu-fj-7jN" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="zXC-o1-DbN"/>
                         </constraints>
                         <connections>
                             <outlet property="backButton" destination="7Qn-U2-Sg3" id="Ie9-rv-HJe"/>
-                            <outlet property="clearButton" destination="Ev1-wQ-WrI" id="wEZ-gd-xo8"/>
                             <outlet property="scoreLabel" destination="sSQ-Me-owM" id="dSw-kV-gjr"/>
                             <outlet property="timeLabel" destination="FIX-A7-fX9" id="Ysq-fZ-Rp5"/>
                         </connections>

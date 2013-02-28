@@ -17,7 +17,6 @@ enum {
   kIdleState,
   kShootState,
   kGameOver,
-  kGameClear,
 };
 
 const float BUBBLE_VELOCITY = 8;
@@ -50,7 +49,7 @@ const float BUBBLE_VELOCITY = 8;
 
   // Initializes field.
   for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
-  for (int i = 0; i < FIELDH / 5; ++i) {
+  for (int i = 0; i < FIELDH / 2; ++i) {
     for (int j = 0; j < FIELDW - (i & 1); ++j) {
       _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
     }
@@ -63,6 +62,8 @@ const float BUBBLE_VELOCITY = 8;
   _effects = [[NSMutableArray alloc] init];
   _score = 0;
   _time = 0;
+  _scrolly = -3 * H * 1024;
+  _scrollSpeed = 1024 / (2 * 60);
 }
 
 - (int)chooseNextBubble {
@@ -94,10 +95,32 @@ const float BUBBLE_VELOCITY = 8;
 - (void)initializeBubble {
   _state = kIdleState;
   _x = WIDTH / 2;
-  _y = H * (FIELDH - 1) + W / 2;
+  _y = H * (FIELDH - 1) + R - 2 * H;
   _c = _nextc;
   _vx = _vy = 0;
   _nextc = [self chooseNextBubble];
+}
+
+// Scroll down.
+- (bool)scrollDown {
+  _scrolly += _scrollSpeed;
+  if (_scrolly >= -1 * H * 1024) {
+    _scrolly -= 2 * H * 1024;
+
+    // Shift field.
+    for (int i = FIELDW * FIELDH; --i >= FIELDW * 2; ) {
+      _field[i] = _field[i - FIELDW * 2];
+    }
+    for (int i = 0; i < FIELDH / 5; ++i) {
+      for (int j = 0; j < FIELDW - (i & 1); ++j) {
+        _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
+      }
+    }
+    
+    if ([self isGameOver])
+      return false;
+  }
+  return true;
 }
 
 // Sets context.
@@ -130,6 +153,11 @@ const float BUBBLE_VELOCITY = 8;
   }
 }
 
+- (void)setGameOver {
+  _state = kGameOver;
+  _backButton.hidden = NO;
+}
+
 // On tick event.
 - (void)onTick:(NSTimer*)timer {
   switch (_state) {
@@ -137,9 +165,15 @@ const float BUBBLE_VELOCITY = 8;
       break;
     case kIdleState:
       _time += 1;
+      if (![self scrollDown]) {
+        [self setGameOver];
+      }
       break;
     case kShootState:
       _time += 1;
+      if (![self scrollDown]) {
+        [self setGameOver];
+      }
       _x += _vx;
       _y += _vy;
       if (_x < W / 2 || _x > WIDTH - W / 2)
@@ -153,11 +187,7 @@ const float BUBBLE_VELOCITY = 8;
 
       if ([self hitCheck]) {
         if ([self isGameOver]) {
-          _state = kGameOver;
-          _backButton.hidden = NO;
-        } else if ([self isGameClear]) {
-          _state = kGameClear;
-          _clearButton.hidden = NO;
+          [self setGameOver];
         }
       }
       break;
@@ -173,10 +203,11 @@ const float BUBBLE_VELOCITY = 8;
 
 // Check bubble hits other bubble.
 - (bool)hitCheck {
+  int y = _y - _scrolly / 1024;
   int tx, ty;
-  for (int by = ((int)_y - R - 2 * R) / H; by <= ((int)_y + R - 2 * R) / H; ++by) {
+  for (int by = ((int)y - R - 2 * R) / H; by <= ((int)y + R - 2 * R) / H; ++by) {
     for (int bx = ((int)_x - R - (by & 1) * R) / W; bx <= ((int)_x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(_field, bx, by, _x, _y, R, &tx, &ty))
+      if (hitFieldBubble(_field, bx, by, _x, y, R, &tx, &ty))
         goto find;
     }
   }
@@ -209,17 +240,6 @@ find:
       return true;
   }
   return false;
-}
-
-// Whether game is cleared.
-- (bool)isGameClear {
-  for (int i = 0; i < FIELDW * FIELDH; ++i) {
-    if (_field[i] != 0) {
-      NSLog(@"Bubble remain (%d, %d): %d", i % FIELDW, i / FIELDW, _field[i]);
-      return false;
-    }
-  }
-  return true;
 }
 
 // Erase bubbles.
@@ -284,7 +304,7 @@ find:
     int xx = x * W + (y & 1) * W / 2 + W / 2;
     int yy = y * H + W / 2;
     Effect* effect = [[Effect alloc] init];
-    [effect initialize: (xx + FIELDX) y:(yy + FIELDY) c:_field[position]];
+    [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position]];
     [_effects addObject:effect];
     
     checked[position] = false;
@@ -298,7 +318,7 @@ find:
 - (void)drawRect:(CGRect)rect {
   // Get graphics context.
   [self setContext:UIGraphicsGetCurrentContext()];
-  
+
   // Clears background.
   setColor(_context, 0, 0, 64);
   fillRect(_context, 0, 0, self.frame.size.width, self.frame.size.height);
@@ -314,8 +334,9 @@ find:
 
 // Renders field.
 - (void)renderField: (bool) beGray {
+  int basey = _scrolly / 1024 + FIELDY;
   for (int i = 0; i < FIELDH; ++i) {
-    int y = i * H + R + FIELDY;
+    int y = i * H + R + basey;
     for (int j = 0; j < FIELDW - (i & 1); ++j) {
       int x = j * W + (i & 1) * R + R + FIELDX;
       int type = _field[fieldIndex(j, i)];
@@ -327,6 +348,9 @@ find:
       }
     }
   }
+
+  setColor(_context, 0, 0, 64);
+  fillRect(_context, 0, 0, self.frame.size.width, FIELDY);
 }
 
 // Renders player.
@@ -358,7 +382,7 @@ find:
 // Renders time.
 - (void)renderTime {
   char c = _time % 60 < 30 ? ':' : ' ';
-  int sec = _time / 60;
+  int sec = (_time / 60) % 60;
   int min = _time / 3600;
   _timeLabel.text = [NSString stringWithFormat : @"%2d%c%02d", min, c, sec];
 }
