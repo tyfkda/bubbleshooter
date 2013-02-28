@@ -21,5 +21,6 @@
   float _vx, _vy;  // Bubble velocity.
   int _nextc;      // Next bubble type.
 }
+@property (weak, nonatomic) IBOutlet UIButton *backButton;
 
 @end

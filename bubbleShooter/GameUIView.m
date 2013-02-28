@@ -126,6 +126,7 @@ const float BUBBLE_VELOCITY = 8;
       if ([self hitCheck]) {
         if ([self isGameOver]) {
           _state = kGameOver;
+          _backButton.hidden = NO;
         }
       }
       break;
@@ -312,5 +313,4 @@ find:
     }
   }
 }
-
 @end
