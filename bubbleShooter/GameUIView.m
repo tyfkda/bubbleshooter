@@ -28,9 +28,18 @@ const float BUBBLE_VELOCITY = 12;
     self.backgroundColor = [UIColor whiteColor];
     _context = NULL;
 
+    [self loadSounds];
     [self initialize];
   }
   return self;
+}
+
+- (void)loadSounds {
+  NSBundle *mainBundle = [NSBundle mainBundle];
+  NSURL *shootWavURL = [NSURL fileURLWithPath:[mainBundle pathForResource:@"chime" ofType:@"mp3"] isDirectory:NO];
+  AudioServicesCreateSystemSoundID((CFURLRef)CFBridgingRetain(shootWavURL), &_shootSoundId);
+  NSURL *disappearWavURL = [NSURL fileURLWithPath:[mainBundle pathForResource:@"chime" ofType:@"mp3"] isDirectory:NO];
+  AudioServicesCreateSystemSoundID((CFURLRef)CFBridgingRetain(disappearWavURL), &_disappearSoundId);
 }
 
 // Finalize.
@@ -157,6 +166,8 @@ const float BUBBLE_VELOCITY = 12;
         _vy = dy * BUBBLE_VELOCITY / l;
         _state = kShootState;
       }
+
+      AudioServicesPlaySystemSound(_shootSoundId);
     } break;
   }
 }
@@ -225,7 +236,7 @@ find:
   if (!validPosition(tx, ty) || _field[fieldIndex(tx, ty)] != 0) {
     NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
     [self initializeBubble];
-    return true;
+    return false;
   }
 
   _field[fieldIndex(tx, ty)] = _c;
@@ -236,6 +247,8 @@ find:
     [self eraseBubbles:bubbles];
     int cutoff_count = [self fallCheck:bubbles bubbleX:_x bubbleY:y];
     _score += connect_count * 10 + cutoff_count * 100;
+
+    AudioServicesPlaySystemSound(_disappearSoundId);
   }
   [self initializeBubble];
   return true;

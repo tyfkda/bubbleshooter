@@ -18,6 +18,8 @@
 		D154A2901683CA2500A8FCD2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D154A28F1683CA2500A8FCD2 /* Default-568h@2x.png */; };
 		D154A2931683CA2500A8FCD2 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D154A2911683CA2500A8FCD2 /* MainStoryboard.storyboard */; };
 		D154A2961683CA2500A8FCD2 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D154A2951683CA2500A8FCD2 /* ViewController.m */; };
+		D159A04B16DF90C40011293A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D159A04A16DF90C40011293A /* AudioToolbox.framework */; };
+		D159A04D16DF91120011293A /* chime.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = D159A04C16DF91110011293A /* chime.mp3 */; };
 		D1923789168427490085B568 /* GameUIView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1923788168427490085B568 /* GameUIView.m */; };
 		D1923790168430670085B568 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = D192378F168430670085B568 /* util.m */; };
 		D19237941684399D0085B568 /* Effect.m in Sources */ = {isa = PBXBuildFile; fileRef = D19237931684399D0085B568 /* Effect.m */; };
@@ -40,6 +42,8 @@
 		D154A2921683CA2500A8FCD2 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		D154A2941683CA2500A8FCD2 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		D154A2951683CA2500A8FCD2 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		D159A04A16DF90C40011293A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		D159A04C16DF91110011293A /* chime.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = chime.mp3; sourceTree = "<group>"; };
 		D1923787168427490085B568 /* GameUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameUIView.h; sourceTree = "<group>"; };
 		D1923788168427490085B568 /* GameUIView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameUIView.m; sourceTree = "<group>"; };
 		D192378E168430670085B568 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
@@ -53,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D159A04B16DF90C40011293A /* AudioToolbox.framework in Frameworks */,
 				D154A27A1683CA2500A8FCD2 /* UIKit.framework in Frameworks */,
 				D154A27C1683CA2500A8FCD2 /* Foundation.framework in Frameworks */,
 				D154A27E1683CA2500A8FCD2 /* CoreGraphics.framework in Frameworks */,
@@ -65,6 +70,7 @@
 		D154A26A1683CA2500A8FCD2 = {
 			isa = PBXGroup;
 			children = (
+				D159A04A16DF90C40011293A /* AudioToolbox.framework */,
 				D154A27F1683CA2500A8FCD2 /* bubbleShooter */,
 				D154A2781683CA2500A8FCD2 /* Frameworks */,
 				D154A2761683CA2500A8FCD2 /* Products */,
@@ -118,6 +124,7 @@
 				D154A28B1683CA2500A8FCD2 /* Default.png */,
 				D154A28D1683CA2500A8FCD2 /* Default@2x.png */,
 				D154A28F1683CA2500A8FCD2 /* Default-568h@2x.png */,
+				D159A04C16DF91110011293A /* chime.mp3 */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -178,6 +185,7 @@
 				D154A28E1683CA2500A8FCD2 /* Default@2x.png in Resources */,
 				D154A2901683CA2500A8FCD2 /* Default-568h@2x.png in Resources */,
 				D154A2931683CA2500A8FCD2 /* MainStoryboard.storyboard in Resources */,
+				D159A04D16DF91120011293A /* chime.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
