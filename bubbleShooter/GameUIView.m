@@ -18,6 +18,8 @@ enum {
   kShootState = 1,
 };
 
+const float BUBBLE_VELOCITY = 8;
+
 // Initialize.
 - (id)initWithCoder:(NSCoder*)coder {
   self = [super initWithCoder:coder];
@@ -92,10 +94,9 @@ enum {
       float dx = pos.x - _x;
       float dy = pos.y - _y;
       if (dx != 0 || dy < 0) {
-        const float V = 5;
         float l = sqrt(dx * dx + dy * dy);
-        _vx = dx * V / l;
-        _vy = dy * V / l;
+        _vx = dx * BUBBLE_VELOCITY / l;
+        _vy = dy * BUBBLE_VELOCITY / l;
         _state = kShootState;
       }
     } break;
@@ -134,12 +135,15 @@ enum {
 // Check bubble hits other bubble.
 - (bool)hitCheck {
   int tx, ty;
-  if (!hitBubble(_field, _x, _y, -R, -R, &tx, &ty) &&
-      !hitBubble(_field, _x, _y, +R, -R, &tx, &ty) &&
-      !hitBubble(_field, _x, _y, -R, +R, &tx, &ty) &&
-      !hitBubble(_field, _x, _y, +R, +R, &tx, &ty))
-    return false;
+  for (int by = ((int)_y - R - 2 * R) / H; by <= ((int)_y + R - 2 * R) / H; ++by) {
+    for (int bx = ((int)_x - R - (by & 1) * R) / W; bx <= ((int)_x + R - (by & 1) * R) / W; ++bx) {
+      if (hitFieldBubble(_field, bx, by, _x, _y, R, &tx, &ty))
+        goto find;
+    }
+  }
+  return false;
   
+find:
   if (!validPosition(tx, ty) || _field[fieldIndex(tx, ty)] != 0) {
     NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
     [self initializeBubble];
@@ -244,9 +248,9 @@ enum {
 // Renders field.
 - (void)renderField {
   for (int i = 0; i < FIELDH; ++i) {
-    int y = i * H + W / 2;
+    int y = i * H + R;
     for (int j = 0; j < FIELDW - (i & 1); ++j) {
-      int x = j * W + (i & 1) * W / 2 + W / 2;
+      int x = j * W + (i & 1) * R + R;
       int type = _field[fieldIndex(j, i)];
       if (type > 0) {
         drawBubble(_context, x, y, type);

@@ -51,23 +51,16 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-bool hitBubble(int* field, int x, int y, int ox, int oy, int* px, int* py) {
-  if (x + ox < 0 || y + oy < 0)
-    return false;
-  int by = (y + oy - (W - H) / 2) / H;
-  if (by >= FIELDH)
-    return false;
-  int bx = (x + oy - (by & 1) * W / 2) / W;
-  if (bx >= FIELDW)
-    return false;
-  if (field[fieldIndex(bx, by)] == 0)
+bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
+  if (!validPosition(bx, by) ||
+      field[fieldIndex(bx, by)] == 0)
     return false;
   
   int target_x = bx * W + (by & 1) * W / 2 + W / 2;
   int target_y = by * H + W / 2;
   int dx = x - target_x;
   int dy = y - target_y;
-  if (dx * dx + dy * dy > 4 * R * R)
+  if (dx * dx + dy * dy > (R + radius) * (R + radius))
     return false;
   
   // Hit a bubble.
