@@ -43,12 +43,12 @@
 @end
 
 @implementation FallEffect
--(void) initialize:(int)x y:(int)y c:(int)c {
+-(void) initialize: (int)x y:(int)y c:(int)c vx:(float)vx vy:(float)vy {
   _x = x;
   _y = y;
   _c = c;
-  _vx = randf(-4, 4);
-  _vy = randf(-4, 0);
+  _vx = vx;
+  _vy = vy;
 }
 
 -(bool) update {

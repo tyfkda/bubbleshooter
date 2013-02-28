@@ -28,7 +28,7 @@
   float _vx, _vy;
   int _c;
 }
--(void) initialize: (int)x y:(int)y c:(int)c;
+-(void) initialize: (int)x y:(int)y c:(int)c vx:(float)vx vy:(float)vy;
 -(bool) update;
 -(void) render: (CGContextRef)context;
 @end

@@ -225,7 +225,7 @@ find:
   int connect_count = [bubbles count];
   if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
-    int cutoff_count = [self fallCheck:bubbles];
+    int cutoff_count = [self fallCheck:bubbles bubbleX:_x bubbleY:y];
     _score += connect_count * 10 + cutoff_count * 100;
   }
   [self initializeBubble];
@@ -259,7 +259,7 @@ find:
 }
 
 // Checks bubbles fall.
-- (int)fallCheck:(NSMutableArray*)erasedBubbles {
+- (int)fallCheck:(NSMutableArray*)erasedBubbles bubbleX:(int)bubbleX bubbleY:(int)bubbleY {
   int cutoff_count = 0;
   for (int i = 0; i < [erasedBubbles count]; ++i) {
     int position = [[erasedBubbles objectAtIndex:i] intValue];
@@ -268,7 +268,7 @@ find:
     NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
     addAdjacentPositions(seeds, x, y);
     for (int j = 0; j < [seeds count]; ++j) {
-      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue]];
+      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue] bubbleX:bubbleX bubbleY:bubbleY];
     }
   }
   if (cutoff_count > 0) {
@@ -278,7 +278,7 @@ find:
 }
 
 // Checks bubbles fall.
-- (int)fallCheckSub:(int)seed {
+- (int)fallCheckSub:(int)seed bubbleX:(int)bubbleX bubbleY:(int)bubbleY {
   bool checked[FIELDW * FIELDH];
   for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
   
@@ -311,8 +311,10 @@ find:
 
     int xx = x * W + (y & 1) * W / 2 + W / 2;
     int yy = y * H + W / 2;
+    float vx = (float)(xx - bubbleX) / 10;
+    float vy = (float)(yy - bubbleY) / 10;
     FallEffect* effect = [[FallEffect alloc] init];
-    [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position]];
+    [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position] vx:vx vy:vy];
     [_effects addObject:effect];
     
     checked[position] = false;
@@ -338,6 +340,9 @@ find:
   [self renderEffects];
   [self renderScore];
   [self renderTime];
+  
+  setColor(_context, 0, 0, 64);
+  fillRect(_context, 0, 0, self.frame.size.width, FIELDY);
 }
 
 // Renders field.
@@ -356,9 +361,6 @@ find:
       }
     }
   }
-
-  setColor(_context, 0, 0, 64);
-  fillRect(_context, 0, 0, self.frame.size.width, FIELDY);
 }
 
 // Renders player.
