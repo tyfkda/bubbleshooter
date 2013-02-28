@@ -22,5 +22,6 @@
   int _nextc;      // Next bubble type.
 }
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
+@property (weak, nonatomic) IBOutlet UIButton *clearButton;
 
 @end

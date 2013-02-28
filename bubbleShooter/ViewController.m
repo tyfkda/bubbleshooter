@@ -26,7 +26,11 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)returnToTitle:(UIStoryboardSegue *)segue
+- (IBAction)returnToTitleGameOver:(UIStoryboardSegue *)segue
+{
+}
+
+- (IBAction)returnToTitleGameFinish:(UIStoryboardSegue *)segue
 {
 }
 

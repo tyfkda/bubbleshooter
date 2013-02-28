@@ -17,6 +17,7 @@ enum {
   kIdleState,
   kShootState,
   kGameOver,
+  kGameClear,
 };
 
 const float BUBBLE_VELOCITY = 8;
@@ -50,7 +51,7 @@ const float BUBBLE_VELOCITY = 8;
   // Initializes field.
   for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
   for (int i = 0; i < FIELDH / 5; ++i) {
-    for (int j = 0; j < FIELDW; ++j) {
+    for (int j = 0; j < FIELDW - (i & 1); ++j) {
       _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
     }
   }
@@ -145,11 +146,14 @@ const float BUBBLE_VELOCITY = 8;
         [self initializeBubble];
         break;
       }
-      
+
       if ([self hitCheck]) {
         if ([self isGameOver]) {
           _state = kGameOver;
           _backButton.hidden = NO;
+        } else if ([self isGameClear]) {
+          _state = kGameClear;
+          _clearButton.hidden = NO;
         }
       }
       break;
@@ -199,6 +203,17 @@ find:
       return true;
   }
   return false;
+}
+
+// Whether game is cleared.
+- (bool)isGameClear {
+  for (int i = 0; i < FIELDW * FIELDH; ++i) {
+    if (_field[i] != 0) {
+      NSLog(@"Bubble remain (%d, %d): %d", i % FIELDW, i / FIELDW, _field[i]);
+      return false;
+    }
+  }
+  return true;
 }
 
 // Erase bubbles.
