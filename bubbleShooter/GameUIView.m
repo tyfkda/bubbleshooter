@@ -116,7 +116,8 @@ const float BUBBLE_VELOCITY = 8;
     {
       float dx = pos.x - _x;
       float dy = pos.y - _y;
-      if (dx != 0 || dy < 0) {
+      const int tan5 = 87;
+      if (dy < 0 && 1000 * abs(dy) / abs(dx) >= tan5) {
         float l = sqrt(dx * dx + dy * dy);
         _vx = dx * BUBBLE_VELOCITY / l;
         _vy = dy * BUBBLE_VELOCITY / l;
