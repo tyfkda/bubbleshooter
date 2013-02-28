@@ -49,7 +49,7 @@ const float BUBBLE_VELOCITY = 8;
 
   // Initializes field.
   for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
-  for (int i = 0; i < FIELDH / 2; ++i) {
+  for (int i = 0; i < FIELDH / 5; ++i) {
     for (int j = 0; j < FIELDW; ++j) {
       _field[fieldIndex(j, i)] = randi(1, kColorBubbles + 1);
     }
@@ -63,6 +63,28 @@ const float BUBBLE_VELOCITY = 8;
 }
 
 - (int)chooseNextBubble {
+  // Search field to list up enable bubble colors.
+  bool enable[kColorBubbles];
+  for (int i = 0; i < kColorBubbles; ++i)
+    enable[i] = false;
+  int n = 0;
+  for (int i = 0; i < FIELDW * FIELDH; ++i) {
+    if (_field[i] != 0) {
+      int c = _field[i] - 1;
+      if (!enable[c]) {
+        enable[c] = true;
+        ++n;
+      }
+    }
+  }
+  int r = randi(0, n);
+  for (int i = 0; i < kColorBubbles; ++i) {
+    if (enable[i])
+      if (--r < 0)
+        return i + 1;
+  }
+
+  NSLog(@"Must not come here.");
   return randi(1, kColorBubbles + 1);
 }
 
