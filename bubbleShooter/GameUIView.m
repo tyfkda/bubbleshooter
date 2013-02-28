@@ -14,8 +14,9 @@
 
 // Player state.
 enum {
-  kIdleState = 0,
-  kShootState = 1,
+  kIdleState,
+  kShootState,
+  kGameOver,
 };
 
 const float BUBBLE_VELOCITY = 8;
@@ -122,7 +123,13 @@ const float BUBBLE_VELOCITY = 8;
         break;
       }
       
-      [self hitCheck];
+      if ([self hitCheck]) {
+        if ([self isGameOver]) {
+          _state = kGameOver;
+        }
+      }
+      break;
+    case kGameOver:
       break;
   }
 
@@ -158,6 +165,16 @@ find:
   }
   [self initializeBubble];
   return true;
+}
+
+// Whether game is over.
+- (bool)isGameOver {
+  int y = FIELDH - 1;
+  for (int x = 0; x < FIELDW - (y & 1); ++x) {
+    if (_field[y * FIELDW + x] != 0)
+      return true;
+  }
+  return false;
 }
 
 // Erase bubbles.
@@ -240,19 +257,24 @@ find:
   setColor(_context, 0, 0, 64);
   fillRect(_context, 0, 0, self.frame.size.width, self.frame.size.height);
 
-  [self renderField];
-  [self renderPlayer];
+  [self renderField: _state == kGameOver];
+  if (_state != kGameOver) {
+    [self renderPlayer];
+  }
   [self renderEffects];
 }
 
 // Renders field.
-- (void)renderField {
+- (void)renderField: (bool) beGray {
   for (int i = 0; i < FIELDH; ++i) {
     int y = i * H + R;
     for (int j = 0; j < FIELDW - (i & 1); ++j) {
       int x = j * W + (i & 1) * R + R;
       int type = _field[fieldIndex(j, i)];
       if (type > 0) {
+        if (beGray) {
+          type = 7;
+        }
         drawBubble(_context, x, y, type);
       }
     }

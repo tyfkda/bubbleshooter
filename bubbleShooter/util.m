@@ -17,6 +17,7 @@ static const int kBubbleColors[][3] = {
   { 255, 0, 255 },  // 4: Purple
   { 0, 255, 255 },  // 5: Cyan
   { 255, 255, 0 },  // 6: Yellow
+  { 128, 128, 128 },  // 7: Gray
 };
 
 int randi(int min, int max) {
