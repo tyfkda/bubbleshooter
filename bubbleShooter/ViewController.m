@@ -29,9 +29,4 @@
 - (IBAction)returnToTitleGameOver:(UIStoryboardSegue *)segue
 {
 }
-
-- (IBAction)returnToTitleGameFinish:(UIStoryboardSegue *)segue
-{
-}
-
 @end

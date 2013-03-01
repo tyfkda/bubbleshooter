@@ -44,18 +44,13 @@ const float BUBBLE_VELOCITY = 12;
 
 // Finalize.
 - (void)dealloc {
+  [self pauseGame];
   [self setContext:NULL];
   //[super dealloc];
 }
 
 // Initialize.
 - (void)initialize {
-  _timer = [NSTimer scheduledTimerWithTimeInterval:1.0f/60.0f
-                                            target:self
-                                          selector:@selector(onTick:)
-                                          userInfo:nil
-                                           repeats:YES];  // No need to retain.
-
   // Initializes field.
   for (int i = 0; i < FIELDW * FIELDH; _field[i++] = 0);
   for (int i = 0; i < FIELDH / 2; ++i) {
@@ -71,6 +66,27 @@ const float BUBBLE_VELOCITY = 12;
   _time = 0;
   _scrolly = -3 * H * 1024;
   _scrollSpeed = 1024 / (2 * 60) * 4;
+
+  [self resumeGame];
+}
+
+// Starts timer.
+- (void)resumeGame {
+  if (_timer == nil) {
+    _timer = [NSTimer scheduledTimerWithTimeInterval:1.0f/60.0f
+                                              target:self
+                                            selector:@selector(onTick:)
+                                            userInfo:nil
+                                             repeats:YES];  // No need to retain.
+  }
+}
+
+// Stops timer.
+- (void)pauseGame {
+  if (_timer != nil) {
+    [_timer invalidate];
+    _timer = nil;
+  }
 }
 
 - (void)setRandomLine: (int)y {
@@ -94,7 +110,7 @@ const float BUBBLE_VELOCITY = 12;
   for (int i = 0; i < FIELDW * FIELDH; ++i) {
     if (_field[i] != 0) {
       int c = _field[i] - 1;
-      if (!enable[c]) {
+      if (c < kColorBubbles && !enable[c]) {
         enable[c] = true;
         ++n;
       }
@@ -165,9 +181,8 @@ const float BUBBLE_VELOCITY = 12;
         _vx = dx * BUBBLE_VELOCITY / l;
         _vy = dy * BUBBLE_VELOCITY / l;
         _state = kShootState;
+        AudioServicesPlaySystemSound(_shootSoundId);
       }
-
-      AudioServicesPlaySystemSound(_shootSoundId);
     } break;
   }
 }
@@ -292,9 +307,6 @@ find:
     for (int j = 0; j < [seeds count]; ++j) {
       cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue] bubbleX:bubbleX bubbleY:bubbleY];
     }
-  }
-  if (cutoff_count > 0) {
-    NSLog(@"Cutoff! %d", cutoff_count);
   }
   return cutoff_count;
 }
