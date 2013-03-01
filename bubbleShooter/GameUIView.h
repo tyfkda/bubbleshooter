@@ -8,16 +8,21 @@
 
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioServices.h>
+#import "Field.h"
 #import "util.h"
 
 @interface GameUIView : UIView {
   CGContextRef _context;
   NSTimer* _timer;
-  int _field[FIELDW * FIELDH];
-  NSMutableArray* _effects;
 
   SystemSoundID _shootSoundId;
   SystemSoundID _disappearSoundId;
+
+  Field* _field;
+
+  /*
+  int _field[FIELDW * FIELDH];
+  NSMutableArray* _effects;
   
   int _state;    // Bubble state.
   int _scrolly;  // Scroll position, 1024 = 1 dot.
@@ -28,6 +33,7 @@
   int _nextc;      // Next bubble type.
   int _score;    // Score.
   int _time;     // Time.
+   */
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
