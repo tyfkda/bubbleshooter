@@ -21,9 +21,9 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 
 @implementation Field
 
-
 - (int)getScore { return _score; }
 - (int)getTime { return _time; }
+- (bool)isGameOver { return _state == kGameOver; }
 
 // Initialize.
 - (void)initialize {
@@ -105,7 +105,7 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
       [self setRandomLine: y];
     }
     
-    if ([self isGameOver])
+    if ([self detectGameOver])
       return false;
   }
   return true;
@@ -148,7 +148,6 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 
 - (void)setGameOver {
   _state = kGameOver;
-  //_backButton.hidden = NO;
 }
 
 // On tick event.
@@ -166,7 +165,7 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
       for (int i = 0; i < MAX_SHOT; ++i)
         hit |= [self moveBubble: &_bubbles[i]];
       if (hit) {
-        if ([self isGameOver]) {
+        if ([self detectGameOver]) {
           [self setGameOver];
         }
       }
@@ -233,7 +232,7 @@ find:
 }
 
 // Whether game is over.
-- (bool)isGameOver {
+- (bool)detectGameOver {
   int y = FIELDH - 1;
   for (int x = 0; x < FIELDW - (y & 1); ++x) {
     if (_field[y * FIELDW + x] != 0)

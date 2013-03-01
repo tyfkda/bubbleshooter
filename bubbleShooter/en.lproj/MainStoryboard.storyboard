@@ -36,16 +36,36 @@
                                     <segue destination="XRH-bS-O0O" kind="modal" identifier="play" modalTransitionStyle="coverVertical" id="RRV-8s-tcm"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="High score" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KBY-OD-7ZS">
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aYe-wV-fmR">
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="87" id="npe-N5-sXj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="bgq-B6-099" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="4dN-Z6-06c"/>
+                            <constraint firstItem="KBY-OD-7ZS" firstAttribute="leading" secondItem="3" secondAttribute="leading" constant="55" id="6l1-Qu-WYW"/>
                             <constraint firstItem="bgq-B6-099" firstAttribute="top" secondItem="3" secondAttribute="top" constant="102" id="8lS-G1-sIt"/>
                             <constraint firstItem="SiT-Bf-2FE" firstAttribute="centerX" secondItem="bgq-B6-099" secondAttribute="centerX" type="default" id="L05-G9-UyX"/>
                             <constraint firstAttribute="trailing" secondItem="bgq-B6-099" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="O7u-rf-u0r"/>
+                            <constraint firstAttribute="trailing" secondItem="aYe-wV-fmR" secondAttribute="trailing" constant="51" id="TKS-yJ-DQG"/>
+                            <constraint firstItem="KBY-OD-7ZS" firstAttribute="top" secondItem="3" secondAttribute="top" constant="263" id="biH-8A-Gcg"/>
+                            <constraint firstItem="aYe-wV-fmR" firstAttribute="baseline" secondItem="KBY-OD-7ZS" secondAttribute="baseline" type="default" id="gSD-qG-GOv"/>
                             <constraint firstAttribute="bottom" secondItem="SiT-Bf-2FE" secondAttribute="bottom" constant="115" id="qRc-e1-48c"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="highScoreLabel" destination="aYe-wV-fmR" id="Eho-Vt-MHG"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
@@ -68,7 +88,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="6cf-I3-oEv" kind="unwind" unwindAction="returnToTitleGameOver:" id="lg0-uG-xCy"/>
+                                    <action selector="onGameOverButtonPushed:" destination="XRH-bS-O0O" eventType="touchUpInside" id="req-EG-ufI"/>
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Score" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jo8-6B-6MP">
@@ -136,17 +156,48 @@
                         </constraints>
                         <connections>
                             <outlet property="backButton" destination="7Qn-U2-Sg3" id="Ie9-rv-HJe"/>
+                            <outlet property="menuButton" destination="dIt-s4-GcS" id="SRp-pn-Whf"/>
                             <outlet property="scoreLabel" destination="sSQ-Me-owM" id="dSw-kV-gjr"/>
                             <outlet property="timeLabel" destination="FIX-A7-fX9" id="Ysq-fZ-Rp5"/>
                         </connections>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4yL-OH-hNp" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="6cf-I3-oEv" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="666" y="32"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="GameUIView" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameUIView.h"/>
+            <relationships>
+                <relationship kind="outlet" name="backButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="menuButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="scoreLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="timeLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="GameViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/GameViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="onGameOverButtonPushed:"/>
+                <relationship kind="action" name="onMenuButtonPushed:"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+        <class className="UIStoryboardSegue" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/UIStoryboardSegue.h"/>
+        </class>
+        <class className="ViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="returnToTitleGameOver:" candidateClass="UIStoryboardSegue"/>
+                <relationship kind="outlet" name="highScoreLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

@@ -37,10 +37,12 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIButton *backButton;
+@property (weak, nonatomic) IBOutlet UIButton *menuButton;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
 - (void)pauseGame;
 - (void)resumeGame;
+- (int)getScore;
 
 @end

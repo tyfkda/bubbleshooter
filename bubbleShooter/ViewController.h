@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#include "GameViewController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController<GameResultDelegate> {
+  int _highScore;
+}
+
+@property (weak, nonatomic) IBOutlet UILabel *highScoreLabel;
 
 @end

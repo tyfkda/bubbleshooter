@@ -43,5 +43,6 @@ static const int MAX_SHOT = 2;
 
 - (int)getScore;
 - (int)getTime;
+- (bool)isGameOver;
 
 @end

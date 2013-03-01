@@ -47,12 +47,23 @@
   [alert show];
 }
 
+- (void)exitGame {
+  GameUIView* view = (GameUIView*)self.view;
+  if ([_delegate respondsToSelector:@selector(notifyScore:)]){
+    [_delegate notifyScore:[view getScore]];
+  }
+  [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)onGameOverButtonPushed:(id)sender {
+  [self exitGame];
+}
+
 // Called when alert dialog button is pushed.
 -(void)alertView:(UIAlertView*)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-  NSLog(@"alertView %d", buttonIndex);
   switch (buttonIndex) {
     case 0:
-      [self dismissViewControllerAnimated:YES completion:nil];
+      [self exitGame];
       break;
     case 1:
     {

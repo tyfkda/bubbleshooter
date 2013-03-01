@@ -62,7 +62,6 @@
   }
 }
 
-// Stops timer.
 - (void)pauseGame {
   if (_timer != nil) {
     [_timer invalidate];
@@ -72,6 +71,10 @@
 
 - (void)onTick:(NSTimer*)timer {
   [_field onTick];
+  if ([_field isGameOver]) {
+    _backButton.hidden = NO;
+    _menuButton.hidden = YES;
+  }
   
   // Requests redraw.
   [self setNeedsDisplay];
@@ -93,9 +96,13 @@
   [self renderTime];
 }
 
+- (int)getScore {
+  return [_field getScore];
+}
+
 // Renders score.
 - (void)renderScore {
-  int score = [_field getScore];
+  int score = [self getScore];
   _scoreLabel.text = [NSString stringWithFormat : @"%d", score];
 }
 
