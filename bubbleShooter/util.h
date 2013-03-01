@@ -13,13 +13,13 @@ static const int WIDTH = 320;
 static const int HEIGHT = 460;
 
 // Bubble and field size.
-static const int W = 32;
+static const int W = 30;
 static const int H = W * 1.7320508 / 2;
-static const int R = 16;
+static const int R = 15;
 
 static const int FIELDW = 10;
 static const int FIELDH = 15 + 3;
-static const int FIELDX = 0;
+static const int FIELDX = (WIDTH - W * FIELDW) / 2;
 static const int FIELDY = 14;
 
 // Number of bubble colors.
@@ -39,6 +39,8 @@ void fillRect(CGContextRef context, float x, float y, float w, float h);
 
 // Fills circle with center position and radius.
 void fillCircle(CGContextRef context, float x, float y, float r);
+
+void drawLine(CGContextRef context, float x0, float y0, float x1, float y1);
 
 ////////////////////////////////////////////////////////////////////
 // Application specific utility functions

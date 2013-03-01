@@ -41,6 +41,13 @@ void fillCircle(CGContextRef context, float x, float y, float r) {
   CGContextFillEllipseInRect(context, CGRectMake(x - r, y - r, r * 2, r * 2));
 }
 
+void drawLine(CGContextRef context, float x0, float y0, float x1, float y1) {
+  //CGContextSetLineCap(context, kCGLineCapRound);
+  CGContextMoveToPoint(context, x0, y0);
+  CGContextAddLineToPoint(context, x1, y1);
+  CGContextStrokePath(context);
+}
+
 ////////////////////////////////////////////////////////////////////
 // Application specific utility functions
 

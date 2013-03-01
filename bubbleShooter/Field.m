@@ -183,11 +183,11 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 
   bubble->x += bubble->vx;
   bubble->y += bubble->vy;
-  if (bubble->x < W / 2 || bubble->x > WIDTH - W / 2)
+  if (bubble->x < R || bubble->x > FIELDW * W - R)
     bubble->vx = -bubble->vx;
-  if (bubble->y < W / 2)
+  if (bubble->y < R)
     bubble->vy = -bubble->vy;
-  if (bubble->y > HEIGHT + W / 2) {
+  if (bubble->y > HEIGHT + R) {
     bubble->active = false;
     return true;
   }
@@ -233,7 +233,7 @@ find:
 
 // Whether game is over.
 - (bool)detectGameOver {
-  int y = FIELDH - 1;
+  int y = (-_scrolly / (H * 1024)) + FIELDH - 3 - 1;
   for (int x = 0; x < FIELDW - (y & 1); ++x) {
     if (_field[y * FIELDW + x] != 0)
       return true;
@@ -323,16 +323,22 @@ find:
 // Render.
 - (void)render:(CGContextRef) context rect:(CGRect)rect {
   // Clears background.
-  setColor(context, 0, 0, 64);
+  setColor(context, 0, 0, 96);
   fillRect(context, 0, 0, rect.size.width, rect.size.height);
   
+  {  // Dead line.
+    const int y = (FIELDH - 3 - 2) * H + R * 2 + FIELDY;
+    setColor(context, 128, 128, 128);
+    drawLine(context, FIELDX, y, WIDTH - FIELDX, y);
+  }
+
   [self renderField: context beGray:(_state == kGameOver)];
   if (_state != kGameOver) {
     [self renderPlayer: context];
   }
   [self renderEffects: context];
   
-  setColor(context, 0, 0, 64);
+  setColor(context, 0, 0, 96);
   fillRect(context, 0, 0, rect.size.width, FIELDY);
 }
 
@@ -352,11 +358,15 @@ find:
       }
     }
   }
+
+  setColor(context, 128, 0, 0);
+  fillRect(context, 0, FIELDY, FIELDX, HEIGHT - FIELDY);
+  fillRect(context, WIDTH - FIELDX, FIELDY, FIELDX, HEIGHT - FIELDY);
 }
 
 // Renders player.
 - (void)renderPlayer: (CGContextRef) context {
-  drawBubble(context, BUBBLE_X, BUBBLE_Y, _nextc[0]);
+  drawBubble(context, BUBBLE_X + FIELDX, BUBBLE_Y + FIELDY, _nextc[0]);
   drawBubble(context, WIDTH / 2 - R * 2 + FIELDX, HEIGHT - R + FIELDY, _nextc[1]);
 
   for (int i = 0; i < MAX_SHOT; ++i)
