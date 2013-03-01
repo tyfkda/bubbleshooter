@@ -9,6 +9,15 @@
 #import <Foundation/Foundation.h>
 #import "util.h"
 
+typedef struct {
+  bool active;
+  float x, y;    // Position.
+  int c;          // Type.
+  float vx, vy;  // Velocity.
+} Bubble;
+
+static const int MAX_SHOT = 2;
+
 @interface Field : NSObject {
   int _field[FIELDW * FIELDH];
   NSMutableArray* _effects;
@@ -16,15 +25,14 @@
   //SystemSoundID _shootSoundId;
   //SystemSoundID _disappearSoundId;
 
-  int _state;    // Bubble state.
+  int _state;    // State.
   int _scrolly;  // Scroll position, 1024 = 1 dot.
   int _scrollSpeed;
-  float _x, _y;  // Bubble position.
-  int _c;        // Bubble type.
-  float _vx, _vy;  // Bubble velocity.
-  int _nextc;      // Next bubble type.
   int _score;    // Score.
   int _time;     // Time.
+
+  Bubble _bubbles[MAX_SHOT];
+  int _nextc[2];      // Next bubble type.
 }
 
 - (void)initialize;

@@ -11,12 +11,13 @@
 
 // Player state.
 enum {
-  kIdleState,
-  kShootState,
+  kPlaying,
   kGameOver,
 };
 
 const float BUBBLE_VELOCITY = 12;
+const float BUBBLE_X = WIDTH / 2;
+const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 
 @implementation Field
 
@@ -33,8 +34,11 @@ const float BUBBLE_VELOCITY = 12;
   }
   
   // Initializes bubble.
-  _nextc = [self chooseNextBubble];
-  [self initializeBubble];
+  _state = kPlaying;
+  for (int i = 0; i < sizeof(_nextc) / sizeof(*_nextc); ++i)
+    _nextc[i] = [self chooseNextBubble];
+  for (int i = 0; i < MAX_SHOT; ++i)
+    _bubbles[i].active = false;
   
   _effects = [[NSMutableArray alloc] init];
   _score = 0;
@@ -81,13 +85,10 @@ const float BUBBLE_VELOCITY = 12;
   return randi(1, kColorBubbles + 1);
 }
 
-- (void)initializeBubble {
-  _state = kIdleState;
-  _x = WIDTH / 2;
-  _y = H * (FIELDH - 1) + R - 2 * H;
-  _c = _nextc;
-  _vx = _vy = 0;
-  _nextc = [self chooseNextBubble];
+- (void)shiftNext {
+  const int n = sizeof(_nextc) / sizeof(*_nextc);
+  memmove(&_nextc[0], &_nextc[1], (n - 1) * sizeof(*_nextc));
+  _nextc[n - 1] = [self chooseNextBubble];
 }
 
 // Scroll down.
@@ -115,17 +116,31 @@ const float BUBBLE_VELOCITY = 12;
   switch (_state) {
     default:
       break;
-    case kIdleState:
+    case kPlaying:
     {
-      float dx = (pos.x - FIELDX) - _x;
-      float dy = (pos.y - FIELDY) - _y;
+      Bubble* bubble = NULL;
+      for (int i = 0; i < MAX_SHOT; ++i) {
+        if (!_bubbles[i].active) {
+          bubble = &_bubbles[i];
+          break;
+        }
+      }
+      if (bubble == NULL)
+        break;
+
+      float dx = (pos.x - FIELDX) - BUBBLE_X;
+      float dy = (pos.y - FIELDY) - BUBBLE_Y;
       const int tan5 = 87;
       if (dy < 0 && (dx == 0 || 1000 * abs(dy) / abs(dx) >= tan5)) {
         float l = sqrt(dx * dx + dy * dy);
-        _vx = dx * BUBBLE_VELOCITY / l;
-        _vy = dy * BUBBLE_VELOCITY / l;
-        _state = kShootState;
+        bubble->active = true;
+        bubble->x = BUBBLE_X;
+        bubble->y = BUBBLE_Y;
+        bubble->c = _nextc[0];
+        bubble->vx = dx * BUBBLE_VELOCITY / l;
+        bubble->vy = dy * BUBBLE_VELOCITY / l;
         //AudioServicesPlaySystemSound(_shootSoundId);
+        [self shiftNext];
       }
     } break;
   }
@@ -141,29 +156,16 @@ const float BUBBLE_VELOCITY = 12;
   switch (_state) {
     default:
       break;
-    case kIdleState:
+    case kPlaying:
       _time += 1;
       if (![self scrollDown]) {
         [self setGameOver];
-      }
-      break;
-    case kShootState:
-      _time += 1;
-      if (![self scrollDown]) {
-        [self setGameOver];
-      }
-      _x += _vx;
-      _y += _vy;
-      if (_x < W / 2 || _x > WIDTH - W / 2)
-        _vx = -_vx;
-      if (_y < W / 2)
-        _vy = -_vy;
-      if (_y > HEIGHT + W / 2) {
-        [self initializeBubble];
-        break;
       }
       
-      if ([self hitCheck]) {
+      bool hit = false;
+      for (int i = 0; i < MAX_SHOT; ++i)
+        hit |= [self moveBubble: &_bubbles[i]];
+      if (hit) {
         if ([self isGameOver]) {
           [self setGameOver];
         }
@@ -176,13 +178,35 @@ const float BUBBLE_VELOCITY = 12;
   [self updateEffects];
 }
 
+- (bool)moveBubble: (Bubble*) bubble {
+  if (!bubble->active)
+    return true;
+
+  bubble->x += bubble->vx;
+  bubble->y += bubble->vy;
+  if (bubble->x < W / 2 || bubble->x > WIDTH - W / 2)
+    bubble->vx = -bubble->vx;
+  if (bubble->y < W / 2)
+    bubble->vy = -bubble->vy;
+  if (bubble->y > HEIGHT + W / 2) {
+    bubble->active = false;
+    return true;
+  }
+    
+  if ([self hitCheck: bubble]) {
+    bubble->active = false;
+    return false;
+  }
+  return true;
+}
+
 // Check bubble hits other bubble.
-- (bool)hitCheck {
-  int y = _y - _scrolly / 1024;
+- (bool)hitCheck: (Bubble*) bubble {
+  int y = bubble->y - _scrolly / 1024;
   int tx, ty;
   for (int by = ((int)y - R - 2 * R) / H; by <= ((int)y + R - 2 * R) / H; ++by) {
-    for (int bx = ((int)_x - R - (by & 1) * R) / W; bx <= ((int)_x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(_field, bx, by, _x, y, R + R - 4, &tx, &ty))
+    for (int bx = ((int)bubble->x - R - (by & 1) * R) / W; bx <= ((int)bubble->x + R - (by & 1) * R) / W; ++bx) {
+      if (hitFieldBubble(_field, bx, by, bubble->x, y, R + R - 4, &tx, &ty))
         goto find;
     }
   }
@@ -191,22 +215,20 @@ const float BUBBLE_VELOCITY = 12;
 find:
   if (!validPosition(tx, ty) || _field[fieldIndex(tx, ty)] != 0) {
     NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
-    [self initializeBubble];
-    return false;
+    return true;
   }
   
-  _field[fieldIndex(tx, ty)] = _c;
+  _field[fieldIndex(tx, ty)] = bubble->c;
   int miny = -_scrolly / (1024 * H);
-  NSMutableArray* bubbles = countBubbles(_field, tx, ty, _c, miny);
+  NSMutableArray* bubbles = countBubbles(_field, tx, ty, bubble->c, miny);
   int connect_count = [bubbles count];
   if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
-    int cutoff_count = [self fallCheck:bubbles bubbleX:_x bubbleY:y];
+    int cutoff_count = [self fallCheck:bubbles bubbleX:bubble->x bubbleY:y];
     _score += connect_count * 10 + cutoff_count * 100;
     
     //AudioServicesPlaySystemSound(_disappearSoundId);
   }
-  [self initializeBubble];
   return true;
 }
 
@@ -335,15 +357,18 @@ find:
 
 // Renders player.
 - (void)renderPlayer: (CGContextRef) context {
-  switch (_state) {
-    default:
-      break;
-    case kIdleState:
-    case kShootState:
-      drawBubble(context, _x + FIELDX, _y + FIELDY, _c);
-      break;
-  }
-  drawBubble(context, WIDTH / 2 - R * 2 + FIELDX, HEIGHT - R + FIELDY, _nextc);
+  drawBubble(context, BUBBLE_X, BUBBLE_Y, _nextc[0]);
+  drawBubble(context, WIDTH / 2 - R * 2 + FIELDX, HEIGHT - R + FIELDY, _nextc[1]);
+
+  for (int i = 0; i < MAX_SHOT; ++i)
+    [self renderBubble: context bubble:&_bubbles[i]];
+}
+
+// Renders player.
+- (void)renderBubble: (CGContextRef) context bubble:(Bubble*)bubble {
+  if (!bubble->active)
+    return;
+  drawBubble(context, bubble->x + FIELDX, bubble->y + FIELDY, bubble->c);
 }
 
 // Renders effects.
