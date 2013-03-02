@@ -21,7 +21,9 @@
     [self loadSounds];
     _field = [[Field alloc] init];
     [_field initialize];
-    
+
+    _bg = [UIImage imageNamed:@"bg.png"];
+
     [self resumeGame];
   }
   return self;
@@ -91,7 +93,13 @@
   // Get graphics context.
   [self setContext:UIGraphicsGetCurrentContext()];
 
+  [_bg drawAtPoint:CGPointMake(0,0)];
+
   [_field render: _context rect:rect];
+
+  setColor(_context, 0, 0, 0);
+  fillRect(_context, 0, 0, rect.size.width, FIELDY);
+
   [self renderScore];
   [self renderTime];
 }

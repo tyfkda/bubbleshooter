@@ -322,10 +322,6 @@ find:
 
 // Render.
 - (void)render:(CGContextRef) context rect:(CGRect)rect {
-  // Clears background.
-  setColor(context, 0, 0, 96);
-  fillRect(context, 0, 0, rect.size.width, rect.size.height);
-  
   {  // Dead line.
     const int y = (FIELDH - 3 - 2) * H + R * 2 + FIELDY;
     setColor(context, 128, 128, 128);
@@ -337,9 +333,6 @@ find:
     [self renderPlayer: context];
   }
   [self renderEffects: context];
-  
-  setColor(context, 0, 0, 96);
-  fillRect(context, 0, 0, rect.size.width, FIELDY);
 }
 
 // Renders field.

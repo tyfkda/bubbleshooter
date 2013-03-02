@@ -19,6 +19,7 @@
   SystemSoundID _disappearSoundId;
 
   Field* _field;
+  UIImage* _bg;
 
   /*
   int _field[FIELDW * FIELDH];
