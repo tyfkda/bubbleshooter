@@ -9,9 +9,7 @@
 #import <UIKit/UIKit.h>
 #include "GameViewController.h"
 
-@interface ViewController : UIViewController<GameResultDelegate> {
-  int _highScore;
-}
+@interface ViewController : UIViewController<GameResultDelegate>
 
 @property (weak, nonatomic) IBOutlet UILabel *highScoreLabel;
 

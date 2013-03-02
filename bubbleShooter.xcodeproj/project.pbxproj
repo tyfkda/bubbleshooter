@@ -26,6 +26,7 @@
 		D19237941684399D0085B568 /* Effect.m in Sources */ = {isa = PBXBuildFile; fileRef = D19237931684399D0085B568 /* Effect.m */; };
 		D198004516E08301007FDDF7 /* Field.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004416E08301007FDDF7 /* Field.m */; };
 		D198004716E177FF007FDDF7 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = D198004616E177FF007FDDF7 /* bg.png */; };
+		D198004A16E18180007FDDF7 /* GameSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004916E18180007FDDF7 /* GameSettings.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,8 @@
 		D198004316E08301007FDDF7 /* Field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Field.h; sourceTree = "<group>"; };
 		D198004416E08301007FDDF7 /* Field.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Field.m; sourceTree = "<group>"; };
 		D198004616E177FF007FDDF7 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
+		D198004816E18180007FDDF7 /* GameSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSettings.h; sourceTree = "<group>"; };
+		D198004916E18180007FDDF7 /* GameSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettings.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +113,8 @@
 				D19237931684399D0085B568 /* Effect.m */,
 				D1923787168427490085B568 /* GameUIView.h */,
 				D1923788168427490085B568 /* GameUIView.m */,
+				D198004816E18180007FDDF7 /* GameSettings.h */,
+				D198004916E18180007FDDF7 /* GameSettings.m */,
 				D198004316E08301007FDDF7 /* Field.h */,
 				D198004416E08301007FDDF7 /* Field.m */,
 				D192378E168430670085B568 /* util.h */,
@@ -218,6 +223,7 @@
 				D19237941684399D0085B568 /* Effect.m in Sources */,
 				D159A05016E0723F0011293A /* GameViewController.m in Sources */,
 				D198004516E08301007FDDF7 /* Field.m in Sources */,
+				D198004A16E18180007FDDF7 /* GameSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

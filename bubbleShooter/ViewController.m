@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "GameSettings.h"
 
 @interface ViewController ()
 
@@ -18,7 +19,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-  _highScore = 0;
+
   [self renderHighScore];
 }
 
@@ -33,7 +34,8 @@
 }
 
 - (void)renderHighScore {
-  _highScoreLabel.text = [NSString stringWithFormat : @"%d", _highScore];
+  int highScore = [GameSettings sharedSettings].highScore;
+  _highScoreLabel.text = [NSString stringWithFormat : @"%d", highScore];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -44,8 +46,8 @@
 }
 
 - (void)notifyScore:(int)score {
-  if (score > _highScore) {
-    _highScore = score;
+  if (score > [GameSettings sharedSettings].highScore) {
+    [GameSettings sharedSettings].highScore = score;
     [self renderHighScore];
   }
 }
