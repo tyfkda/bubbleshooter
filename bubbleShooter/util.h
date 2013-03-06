@@ -40,6 +40,9 @@ void fillRect(CGContextRef context, float x, float y, float w, float h);
 // Fills circle with center position and radius.
 void fillCircle(CGContextRef context, float x, float y, float r);
 
+// Draws circle with center position and radius.
+void drawCircle(CGContextRef context, float x, float y, float r);
+
 void drawLine(CGContextRef context, float x0, float y0, float x1, float y1);
 
 ////////////////////////////////////////////////////////////////////

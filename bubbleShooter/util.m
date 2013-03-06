@@ -41,6 +41,10 @@ void fillCircle(CGContextRef context, float x, float y, float r) {
   CGContextFillEllipseInRect(context, CGRectMake(x - r, y - r, r * 2, r * 2));
 }
 
+void drawCircle(CGContextRef context, float x, float y, float r) {
+  CGContextStrokeEllipseInRect(context, CGRectMake(x - r, y - r, r * 2, r * 2));
+}
+
 void drawLine(CGContextRef context, float x0, float y0, float x1, float y1) {
   //CGContextSetLineCap(context, kCGLineCapRound);
   CGContextMoveToPoint(context, x0, y0);
@@ -137,4 +141,6 @@ void drawBubble(CGContextRef context, float x, float y, int type) {
   int b = kBubbleColors[type][2];
   setColor(context, r, g, b);
   fillCircle(context, x, y, R);
+  setColor(context, r >> 1, g >> 1, b >> 1);
+  drawCircle(context, x, y, R);
 }
