@@ -63,7 +63,7 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
+bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
   if (!validPosition(bx, by) ||
       field[fieldIndex(bx, by)] == 0)
     return false;
@@ -90,7 +90,7 @@ bool hitFieldBubble(int* field, int bx, int by, int x, int y, int radius, int* p
   return true;
 }
 
-NSMutableArray* countBubbles(int* field, int x, int y, int c, int miny) {
+NSMutableArray* countBubbles(const int* field, int x, int y, int c, int miny) {
   bool checked[FIELDW * FIELDH];
   for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
   NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:1];

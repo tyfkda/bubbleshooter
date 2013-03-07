@@ -27,11 +27,12 @@
 		D198004516E08301007FDDF7 /* Field.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004416E08301007FDDF7 /* Field.m */; };
 		D198004716E177FF007FDDF7 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = D198004616E177FF007FDDF7 /* bg.png */; };
 		D198004A16E18180007FDDF7 /* GameSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004916E18180007FDDF7 /* GameSettings.m */; };
-		D1CA7E3316E8B05100FCA185 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CA7E3216E8B05100FCA185 /* SenTestingKit.framework */; };
 		D1CA7E3416E8B05100FCA185 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D154A2791683CA2500A8FCD2 /* UIKit.framework */; };
 		D1CA7E3516E8B05100FCA185 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D154A27B1683CA2500A8FCD2 /* Foundation.framework */; };
 		D1CA7E3B16E8B05100FCA185 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1CA7E3916E8B05100FCA185 /* InfoPlist.strings */; };
 		D1CA7E4716E8B1D300FCA185 /* FieldTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CA7E4616E8B1D300FCA185 /* FieldTest.m */; };
+		D1CA7E4A16E8B2ED00FCA185 /* utilTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CA7E4916E8B2ED00FCA185 /* utilTest.m */; };
+		D1CA7E4C16E8B41200FCA185 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CA7E4B16E8B41200FCA185 /* SenTestingKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,9 @@
 		D1CA7E3F16E8B05100FCA185 /* bubbleShooterTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bubbleShooterTest-Prefix.pch"; sourceTree = "<group>"; };
 		D1CA7E4516E8B1D300FCA185 /* FieldTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FieldTest.h; sourceTree = "<group>"; };
 		D1CA7E4616E8B1D300FCA185 /* FieldTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FieldTest.m; sourceTree = "<group>"; };
+		D1CA7E4816E8B2ED00FCA185 /* utilTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utilTest.h; sourceTree = "<group>"; };
+		D1CA7E4916E8B2ED00FCA185 /* utilTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = utilTest.m; sourceTree = "<group>"; };
+		D1CA7E4B16E8B41200FCA185 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1CA7E3316E8B05100FCA185 /* SenTestingKit.framework in Frameworks */,
+				D1CA7E4C16E8B41200FCA185 /* SenTestingKit.framework in Frameworks */,
 				D1CA7E3416E8B05100FCA185 /* UIKit.framework in Frameworks */,
 				D1CA7E3516E8B05100FCA185 /* Foundation.framework in Frameworks */,
 			);
@@ -113,6 +117,7 @@
 		D154A26A1683CA2500A8FCD2 = {
 			isa = PBXGroup;
 			children = (
+				D1CA7E4B16E8B41200FCA185 /* SenTestingKit.framework */,
 				D159A04A16DF90C40011293A /* AudioToolbox.framework */,
 				D154A27F1683CA2500A8FCD2 /* bubbleShooter */,
 				D1CA7E3616E8B05100FCA185 /* bubbleShooterTest */,
@@ -187,6 +192,8 @@
 			children = (
 				D1CA7E4516E8B1D300FCA185 /* FieldTest.h */,
 				D1CA7E4616E8B1D300FCA185 /* FieldTest.m */,
+				D1CA7E4816E8B2ED00FCA185 /* utilTest.h */,
+				D1CA7E4916E8B2ED00FCA185 /* utilTest.m */,
 				D1CA7E3716E8B05100FCA185 /* Supporting Files */,
 			);
 			path = bubbleShooterTest;
@@ -331,6 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1CA7E4716E8B1D300FCA185 /* FieldTest.m in Sources */,
+				D1CA7E4A16E8B2ED00FCA185 /* utilTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
