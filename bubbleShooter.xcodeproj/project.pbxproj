@@ -27,7 +27,22 @@
 		D198004516E08301007FDDF7 /* Field.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004416E08301007FDDF7 /* Field.m */; };
 		D198004716E177FF007FDDF7 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = D198004616E177FF007FDDF7 /* bg.png */; };
 		D198004A16E18180007FDDF7 /* GameSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = D198004916E18180007FDDF7 /* GameSettings.m */; };
+		D1CA7E3316E8B05100FCA185 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1CA7E3216E8B05100FCA185 /* SenTestingKit.framework */; };
+		D1CA7E3416E8B05100FCA185 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D154A2791683CA2500A8FCD2 /* UIKit.framework */; };
+		D1CA7E3516E8B05100FCA185 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D154A27B1683CA2500A8FCD2 /* Foundation.framework */; };
+		D1CA7E3B16E8B05100FCA185 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D1CA7E3916E8B05100FCA185 /* InfoPlist.strings */; };
+		D1CA7E4716E8B1D300FCA185 /* FieldTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CA7E4616E8B1D300FCA185 /* FieldTest.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D1CA7E4316E8B0A900FCA185 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D154A26C1683CA2500A8FCD2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D154A2741683CA2500A8FCD2;
+			remoteInfo = bubbleShooter;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		D154A2751683CA2500A8FCD2 /* bubbleShooter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bubbleShooter.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +76,13 @@
 		D198004616E177FF007FDDF7 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
 		D198004816E18180007FDDF7 /* GameSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameSettings.h; sourceTree = "<group>"; };
 		D198004916E18180007FDDF7 /* GameSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameSettings.m; sourceTree = "<group>"; };
+		D1CA7E3116E8B05100FCA185 /* bubbleShooterTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = bubbleShooterTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1CA7E3216E8B05100FCA185 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		D1CA7E3816E8B05100FCA185 /* bubbleShooterTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "bubbleShooterTest-Info.plist"; sourceTree = "<group>"; };
+		D1CA7E3A16E8B05100FCA185 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D1CA7E3F16E8B05100FCA185 /* bubbleShooterTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bubbleShooterTest-Prefix.pch"; sourceTree = "<group>"; };
+		D1CA7E4516E8B1D300FCA185 /* FieldTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FieldTest.h; sourceTree = "<group>"; };
+		D1CA7E4616E8B1D300FCA185 /* FieldTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FieldTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +97,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D1CA7E2D16E8B05100FCA185 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1CA7E3316E8B05100FCA185 /* SenTestingKit.framework in Frameworks */,
+				D1CA7E3416E8B05100FCA185 /* UIKit.framework in Frameworks */,
+				D1CA7E3516E8B05100FCA185 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -83,6 +115,7 @@
 			children = (
 				D159A04A16DF90C40011293A /* AudioToolbox.framework */,
 				D154A27F1683CA2500A8FCD2 /* bubbleShooter */,
+				D1CA7E3616E8B05100FCA185 /* bubbleShooterTest */,
 				D154A2781683CA2500A8FCD2 /* Frameworks */,
 				D154A2761683CA2500A8FCD2 /* Products */,
 			);
@@ -92,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				D154A2751683CA2500A8FCD2 /* bubbleShooter.app */,
+				D1CA7E3116E8B05100FCA185 /* bubbleShooterTest.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -102,6 +136,7 @@
 				D154A2791683CA2500A8FCD2 /* UIKit.framework */,
 				D154A27B1683CA2500A8FCD2 /* Foundation.framework */,
 				D154A27D1683CA2500A8FCD2 /* CoreGraphics.framework */,
+				D1CA7E3216E8B05100FCA185 /* SenTestingKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -147,6 +182,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		D1CA7E3616E8B05100FCA185 /* bubbleShooterTest */ = {
+			isa = PBXGroup;
+			children = (
+				D1CA7E4516E8B1D300FCA185 /* FieldTest.h */,
+				D1CA7E4616E8B1D300FCA185 /* FieldTest.m */,
+				D1CA7E3716E8B05100FCA185 /* Supporting Files */,
+			);
+			path = bubbleShooterTest;
+			sourceTree = "<group>";
+		};
+		D1CA7E3716E8B05100FCA185 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D1CA7E3816E8B05100FCA185 /* bubbleShooterTest-Info.plist */,
+				D1CA7E3916E8B05100FCA185 /* InfoPlist.strings */,
+				D1CA7E3F16E8B05100FCA185 /* bubbleShooterTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -166,6 +221,25 @@
 			productName = bubbleShooter;
 			productReference = D154A2751683CA2500A8FCD2 /* bubbleShooter.app */;
 			productType = "com.apple.product-type.application";
+		};
+		D1CA7E3016E8B05100FCA185 /* bubbleShooterTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D1CA7E4216E8B05100FCA185 /* Build configuration list for PBXNativeTarget "bubbleShooterTest" */;
+			buildPhases = (
+				D1CA7E2C16E8B05100FCA185 /* Sources */,
+				D1CA7E2D16E8B05100FCA185 /* Frameworks */,
+				D1CA7E2E16E8B05100FCA185 /* Resources */,
+				D1CA7E2F16E8B05100FCA185 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D1CA7E4416E8B0A900FCA185 /* PBXTargetDependency */,
+			);
+			name = bubbleShooterTest;
+			productName = bubbleShooterTest;
+			productReference = D1CA7E3116E8B05100FCA185 /* bubbleShooterTest.octest */;
+			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
 
@@ -189,6 +263,7 @@
 			projectRoot = "";
 			targets = (
 				D154A2741683CA2500A8FCD2 /* bubbleShooter */,
+				D1CA7E3016E8B05100FCA185 /* bubbleShooterTest */,
 			);
 		};
 /* End PBXProject section */
@@ -208,7 +283,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D1CA7E2E16E8B05100FCA185 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1CA7E3B16E8B05100FCA185 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D1CA7E2F16E8B05100FCA185 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D154A2711683CA2500A8FCD2 /* Sources */ = {
@@ -227,7 +326,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D1CA7E2C16E8B05100FCA185 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D1CA7E4716E8B1D300FCA185 /* FieldTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D1CA7E4416E8B0A900FCA185 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D154A2741683CA2500A8FCD2 /* bubbleShooter */;
+			targetProxy = D1CA7E4316E8B0A900FCA185 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		D154A2821683CA2500A8FCD2 /* InfoPlist.strings */ = {
@@ -244,6 +359,14 @@
 				D154A2921683CA2500A8FCD2 /* en */,
 			);
 			name = MainStoryboard.storyboard;
+			sourceTree = "<group>";
+		};
+		D1CA7E3916E8B05100FCA185 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D1CA7E3A16E8B05100FCA185 /* en */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -301,12 +424,14 @@
 		D154A29A1683CA2500A8FCD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "bubbleShooter/bubbleShooter-Prefix.pch";
 				INFOPLIST_FILE = "bubbleShooter/bubbleShooter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -314,13 +439,58 @@
 		D154A29B1683CA2500A8FCD2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "bubbleShooter/bubbleShooter-Prefix.pch";
 				INFOPLIST_FILE = "bubbleShooter/bubbleShooter-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "";
 				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		D1CA7E4016E8B05100FCA185 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "${BUILT_PRODUCTS_DIR}/bubbleShooter.app/bubbleShooter";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bubbleShooterTest/bubbleShooterTest-Prefix.pch";
+				INFOPLIST_FILE = "bubbleShooterTest/bubbleShooterTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "${BUNDLE_LOADER}";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		D1CA7E4116E8B05100FCA185 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "${BUILT_PRODUCTS_DIR}/bubbleShooter.app/bubbleShooter";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bubbleShooterTest/bubbleShooterTest-Prefix.pch";
+				INFOPLIST_FILE = "bubbleShooterTest/bubbleShooterTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "${BUNDLE_LOADER}";
+				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
@@ -344,6 +514,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		D1CA7E4216E8B05100FCA185 /* Build configuration list for PBXNativeTarget "bubbleShooterTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1CA7E4016E8B05100FCA185 /* Debug */,
+				D1CA7E4116E8B05100FCA185 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
