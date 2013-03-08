@@ -24,14 +24,12 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   }
 }
 
-- (void)testFieldIndex
-{
+- (void)testFieldIndex {
   STAssertEquals(0, fieldIndex(0, 0), nil);
   STAssertEquals(3 * FIELDW + 2, fieldIndex(2, 3), nil);
 }
 
-- (void)testValidPosition
-{
+- (void)testValidPosition {
   STAssertTrue(validPosition(0, 0), nil);
   STAssertTrue(validPosition(FIELDW - 1, 0), nil);
   STAssertFalse(validPosition(-1, 0), nil);
@@ -48,8 +46,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   STAssertTrue(validPosition(0, FIELDH - 1), nil);
 }
 
-- (void)testHitFieldBubble
-{
+- (void)testHitFieldBubble {
   const int X = 7;
   const int O = 1;
   const int _ = 0;
@@ -78,8 +75,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   STAssertFalse(hitFieldBubble(field, 5, 0, bubbleX, bubbleY, R + R, &px, &py), nil);
 }
 
-- (void)testCountBubbles
-{
+- (void)testCountBubbles {
   const int X = 7;
   const int O = 1;
   const int B = 2;
@@ -115,8 +111,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   [self checkIntMutableArray: bubbles expected:expected];
 }
 
-- (void)testAddAdjacentPositions
-{
+- (void)testAddAdjacentPositions {
   NSMutableArray* seeds = [[NSMutableArray alloc] init];
   addAdjacentPositions(seeds, 0, 1);
   STAssertTrue(seeds != nil, nil);
