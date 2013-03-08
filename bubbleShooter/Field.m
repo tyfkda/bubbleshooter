@@ -231,8 +231,29 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
   int connect_count = [bubbles count];
   if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
-    int y = bubble->y - _scrolly / 1024;
-    int cutoff_count = [self fallCheck:bubbles bubbleX:bubble->x bubbleY:y];
+    //int y = bubble->y - _scrolly / 1024;
+
+    NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] initWithCapacity:6];
+    fallCheck(_field, bubbles, cutoffBubbles);
+    
+    int cutoff_count = [cutoffBubbles count];
+    if (cutoff_count > 0) {
+      for (int i = 0; i < [cutoffBubbles count]; ++i) {
+        int position = [[cutoffBubbles objectAtIndex:i] intValue];
+        int x = position % FIELDW;
+        int y = position / FIELDW;
+        
+        int xx = x * W + (y & 1) * W / 2 + W / 2;
+        int yy = y * H + W / 2;
+        float vx = (float)(xx - bubble->x) / 10;
+        float vy = (float)(yy - bubble->y) / 10;
+        FallEffect* effect = [[FallEffect alloc] init];
+        [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position] vx:vx vy:vy];
+        [_effects addObject:effect];
+        _field[position] = 0;
+      }
+    }
+
     _score += connect_count * 10 + cutoff_count * 100;
 
     //AudioServicesPlaySystemSound(_disappearSoundId);
@@ -263,72 +284,6 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
     [effect initialize: xx y:yy c:c r:R];
     [_effects addObject:effect];
   }
-}
-
-// Checks bubbles fall.
-- (int)fallCheck:(NSMutableArray*)erasedBubbles bubbleX:(int)bubbleX bubbleY:(int)bubbleY {
-  int cutoff_count = 0;
-  NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] init];
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
-  for (int i = 0; i < [erasedBubbles count]; ++i) {
-    int position = [[erasedBubbles objectAtIndex:i] intValue];
-    int x = position % FIELDW;
-    int y = position / FIELDW;
-    [seeds removeAllObjects];
-    addAdjacentPositions(seeds, x, y);
-    for (int j = 0; j < [seeds count]; ++j) {
-      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue] bubbleX:bubbleX bubbleY:bubbleY buffer:cutoffBubbles];
-    }
-  }
-  return cutoff_count;
-}
-
-// Checks bubbles fall.
-- (int)fallCheckSub:(int)seed bubbleX:(int)bubbleX bubbleY:(int)bubbleY buffer:(NSMutableArray*)buffer {
-  bool checked[FIELDW * FIELDH];
-  for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
-
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
-  [seeds addObject:[NSNumber numberWithInt:seed]];
-  
-  for (int i = 0; i < [seeds count]; ++i) {
-    int position = [[seeds objectAtIndex:i] intValue];
-    int x = position % FIELDW;
-    int y = position / FIELDW;
-    if (!validPosition(x, y) || _field[position] == 0 || checked[position]) {
-      continue;
-    }
-    checked[position] = true;
-    if (y == 0) {
-      // Not fall these bubbles because sticked with ceil.
-      return 0;
-    }
-    addAdjacentPositions(seeds, x, y);
-  }
-
-  // Not sticked with ceil. Fall all bubbles.
-  int cutoff_count = 0;
-  for (int i = 0; i < [seeds count]; ++i) {
-    int position = [[seeds objectAtIndex:i] intValue];
-    int x = position % FIELDW;
-    int y = position / FIELDW;
-    if (_field[position] == 0)
-      continue;
-
-    [buffer addObject:[NSNumber numberWithInt:fieldIndex(x, y)]];
-    int xx = x * W + (y & 1) * W / 2 + W / 2;
-    int yy = y * H + W / 2;
-    float vx = (float)(xx - bubbleX) / 10;
-    float vy = (float)(yy - bubbleY) / 10;
-    FallEffect* effect = [[FallEffect alloc] init];
-    [effect initialize: (xx + FIELDX) y:(yy + _scrolly / 1024 + FIELDY) c:_field[position] vx:vx vy:vy];
-    [_effects addObject:effect];
-    
-    checked[position] = false;
-    _field[position] = 0;
-    ++cutoff_count;
-  }
-  return cutoff_count;
 }
 
 // Render.

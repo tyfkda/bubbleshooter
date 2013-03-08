@@ -65,5 +65,7 @@ NSMutableArray* countBubbles(const int* field, int x, int y, int c, int miny);
 // Adds 6 adjacent positions to the array.
 void addAdjacentPositions(NSMutableArray* seeds, int x, int y);
 
+void fallCheck(const int* field, NSMutableArray* erasedBubbles, NSMutableArray* cutoffBubbles);
+
 // Draws bubble with center position and type.
 void drawBubble(CGContextRef context, float x, float y, int type);
