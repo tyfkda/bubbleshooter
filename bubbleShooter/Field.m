@@ -117,33 +117,39 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
     default:
       break;
     case kPlaying:
-    {
-      Bubble* bubble = NULL;
-      for (int i = 0; i < MAX_SHOT; ++i) {
-        if (!_bubbles[i].active) {
-          bubble = &_bubbles[i];
-          break;
-        }
-      }
-      if (bubble == NULL)
-        break;
-
-      float dx = (pos.x - FIELDX) - BUBBLE_X;
-      float dy = (pos.y - FIELDY) - BUBBLE_Y;
-      const int tan5 = 87;
-      if (dy < 0 && (dx == 0 || 1000 * abs(dy) / abs(dx) >= tan5)) {
-        float l = sqrt(dx * dx + dy * dy);
-        bubble->active = true;
-        bubble->x = BUBBLE_X;
-        bubble->y = BUBBLE_Y;
-        bubble->c = _nextc[0];
-        bubble->vx = dx * BUBBLE_VELOCITY / l;
-        bubble->vy = dy * BUBBLE_VELOCITY / l;
+      if ([self shotBubble: pos x:BUBBLE_X y:BUBBLE_Y c:_nextc[0]] != NULL) {
         //AudioServicesPlaySystemSound(_shootSoundId);
         [self shiftNext];
       }
-    } break;
+      break;
   }
+}
+
+- (Bubble*)shotBubble:(CGPoint)pos x:(float)x y:(float)y c:(int)c {
+  Bubble* bubble = NULL;
+  for (int i = 0; i < MAX_SHOT; ++i) {
+    if (!_bubbles[i].active) {
+      bubble = &_bubbles[i];
+      break;
+    }
+  }
+  if (bubble == NULL)
+    return NULL;
+
+  float dx = (pos.x - FIELDX) - x;
+  float dy = (pos.y - FIELDY) - y;
+  const int tan5 = 87;
+  if (dy >= 0 || (dx != 0 && 1000 * abs(dy) / abs(dx) < tan5))
+    return NULL;
+
+  float l = sqrt(dx * dx + dy * dy);
+  bubble->active = true;
+  bubble->x = x;
+  bubble->y = y;
+  bubble->c = c;
+  bubble->vx = dx * BUBBLE_VELOCITY / l;
+  bubble->vy = dy * BUBBLE_VELOCITY / l;
+  return bubble;
 }
 
 - (void)setGameOver {
@@ -191,8 +197,10 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
     bubble->active = false;
     return true;
   }
-    
-  if ([self hitCheck: bubble]) {
+
+  int tx, ty;
+  if ([self hitCheck: bubble ptx:&tx pty:&ty]) {
+    [self setBubble: bubble tx:tx ty:ty];
     bubble->active = false;
     return false;
   }
@@ -200,35 +208,35 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 }
 
 // Check bubble hits other bubble.
-- (bool)hitCheck: (Bubble*) bubble {
+- (bool)hitCheck: (Bubble*) bubble ptx:(int*)ptx pty:(int*)pty {
   int y = bubble->y - _scrolly / 1024;
-  int tx, ty;
   for (int by = ((int)y - R - 2 * R) / H; by <= ((int)y + R - 2 * R) / H; ++by) {
     for (int bx = ((int)bubble->x - R - (by & 1) * R) / W; bx <= ((int)bubble->x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(_field, bx, by, bubble->x, y, R + R - 4, &tx, &ty))
-        goto find;
+      if (hitFieldBubble(_field, bx, by, bubble->x, y, R + R - 4, ptx, pty)) {
+        if (!validPosition(*ptx, *pty) || _field[fieldIndex(*ptx, *pty)] != 0) {
+          NSLog(@"Invalid hit position: (%d,%d)", *ptx, *pty);
+        } else {
+          return true;
+        }
+      }
     }
   }
   return false;
-  
-find:
-  if (!validPosition(tx, ty) || _field[fieldIndex(tx, ty)] != 0) {
-    NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
-    return true;
-  }
-  
+}
+
+- (void)setBubble: (Bubble*) bubble tx:(int)tx ty:(int)ty {
   _field[fieldIndex(tx, ty)] = bubble->c;
   int miny = -_scrolly / (1024 * H);
   NSMutableArray* bubbles = countBubbles(_field, tx, ty, bubble->c, miny);
   int connect_count = [bubbles count];
   if (connect_count >= 3) {
     [self eraseBubbles:bubbles];
+    int y = bubble->y - _scrolly / 1024;
     int cutoff_count = [self fallCheck:bubbles bubbleX:bubble->x bubbleY:y];
     _score += connect_count * 10 + cutoff_count * 100;
-    
+
     //AudioServicesPlaySystemSound(_disappearSoundId);
   }
-  return true;
 }
 
 // Whether game is over.
@@ -260,25 +268,27 @@ find:
 // Checks bubbles fall.
 - (int)fallCheck:(NSMutableArray*)erasedBubbles bubbleX:(int)bubbleX bubbleY:(int)bubbleY {
   int cutoff_count = 0;
+  NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] init];
+  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
   for (int i = 0; i < [erasedBubbles count]; ++i) {
     int position = [[erasedBubbles objectAtIndex:i] intValue];
     int x = position % FIELDW;
     int y = position / FIELDW;
-    NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
+    [seeds removeAllObjects];
     addAdjacentPositions(seeds, x, y);
     for (int j = 0; j < [seeds count]; ++j) {
-      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue] bubbleX:bubbleX bubbleY:bubbleY];
+      cutoff_count += [self fallCheckSub:[[seeds objectAtIndex:j] intValue] bubbleX:bubbleX bubbleY:bubbleY buffer:cutoffBubbles];
     }
   }
   return cutoff_count;
 }
 
 // Checks bubbles fall.
-- (int)fallCheckSub:(int)seed bubbleX:(int)bubbleX bubbleY:(int)bubbleY {
+- (int)fallCheckSub:(int)seed bubbleX:(int)bubbleX bubbleY:(int)bubbleY buffer:(NSMutableArray*)buffer {
   bool checked[FIELDW * FIELDH];
   for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
-  
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:1];
+
+  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
   [seeds addObject:[NSNumber numberWithInt:seed]];
   
   for (int i = 0; i < [seeds count]; ++i) {
@@ -295,16 +305,17 @@ find:
     }
     addAdjacentPositions(seeds, x, y);
   }
-  
+
   // Not sticked with ceil. Fall all bubbles.
   int cutoff_count = 0;
   for (int i = 0; i < [seeds count]; ++i) {
     int position = [[seeds objectAtIndex:i] intValue];
     int x = position % FIELDW;
     int y = position / FIELDW;
-    if (!validPosition(x, y) || _field[position] == 0)
+    if (_field[position] == 0)
       continue;
-    
+
+    [buffer addObject:[NSNumber numberWithInt:fieldIndex(x, y)]];
     int xx = x * W + (y & 1) * W / 2 + W / 2;
     int yy = y * H + W / 2;
     float vx = (float)(xx - bubbleX) / 10;
