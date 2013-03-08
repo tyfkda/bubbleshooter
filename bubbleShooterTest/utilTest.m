@@ -127,4 +127,43 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   [self checkIntMutableArray: seeds expected:expected];
 }
 
+- (void)testFallCheck {
+  const int O = 1;
+  const int _ = 0;
+  const int field[] = {
+    O,O,O,O,O,O,O,O,O,O,
+     O,O,O,O,O,O,O,O,O,  _,
+    O,O,O,O,O,O,O,O,O,O,
+     _,O,O,O,O,O,O,O,O,  _,
+    O,_,O,O,O,O,O,O,O,O,
+     O,_,O,O,O,O,O,O,O,  _,
+    O,O,_,O,O,O,O,O,O,O,
+     _,_,_,_,_,_,_,_,_,  _,
+    _,_,_,_,_,_,_,_,_,_,
+     _,_,_,_,_,_,_,_,_,  _,
+    _,_,_,_,_,_,_,_,_,_,
+     _,_,_,_,_,_,_,_,_,  _,
+    _,_,_,_,_,_,_,_,_,_,
+     _,_,_,_,_,_,_,_,_,  _,
+    _,_,_,_,_,_,_,_,_,_,
+  };
+  NSMutableArray* erasedBubbles = [[NSMutableArray alloc] init];
+  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(0, 3)]];
+  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(1, 4)]];
+  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(1, 5)]];
+  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(2, 6)]];
+  
+  NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] init];
+  fallCheck(field, erasedBubbles, cutoffBubbles);
+  STAssertEquals(4, (int)[cutoffBubbles count], nil);
+  
+  const int expected[] = {
+    fieldIndex(0, 4),
+    fieldIndex(0, 5),
+    fieldIndex(0, 6),
+    fieldIndex(1, 6),
+  };
+  [self checkIntMutableArray: cutoffBubbles expected:expected];
+}
+
 @end

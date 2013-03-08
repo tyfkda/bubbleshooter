@@ -530,6 +530,7 @@
 				D1CA7E4116E8B05100FCA185 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
