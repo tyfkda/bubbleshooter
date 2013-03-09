@@ -199,29 +199,13 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
   }
 
   int tx, ty;
-  if ([self hitCheck: bubble ptx:&tx pty:&ty]) {
+  int y = bubble->y - _scrolly / 1024;
+  if (hitFieldCheck(_field, bubble->x, y, R + R - 4, &tx, &ty)) {
     [self setBubble: bubble tx:tx ty:ty];
     bubble->active = false;
     return false;
   }
   return true;
-}
-
-// Check bubble hits other bubble.
-- (bool)hitCheck: (Bubble*) bubble ptx:(int*)ptx pty:(int*)pty {
-  int y = bubble->y - _scrolly / 1024;
-  for (int by = ((int)y - R - 2 * R) / H; by <= ((int)y + R - 2 * R) / H; ++by) {
-    for (int bx = ((int)bubble->x - R - (by & 1) * R) / W; bx <= ((int)bubble->x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(_field, bx, by, bubble->x, y, R + R - 4, ptx, pty)) {
-        if (!validPosition(*ptx, *pty) || _field[fieldIndex(*ptx, *pty)] != 0) {
-          NSLog(@"Invalid hit position: (%d,%d)", *ptx, *pty);
-        } else {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
 }
 
 - (void)setBubble: (Bubble*) bubble tx:(int)tx ty:(int)ty {

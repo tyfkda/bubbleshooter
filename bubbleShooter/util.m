@@ -63,7 +63,7 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
+static bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
   if (!validPosition(bx, by) ||
       field[fieldIndex(bx, by)] == 0)
     return false;
@@ -88,6 +88,25 @@ bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, 
   *px = tx;
   *py = ty;
   return true;
+}
+
+// Check bubble hits other bubble in the field.
+bool hitFieldCheck(const int* field, int x, int y, int r, int* ptx, int* pty) {
+  int tx, ty;
+  for (int by = (y - R - 2 * R) / H; by <= (y + R - 2 * R) / H; ++by) {
+    for (int bx = (x - R - (by & 1) * R) / W; bx <= (x + R - (by & 1) * R) / W; ++bx) {
+      if (hitFieldBubble(field, bx, by, x, y, r, &tx, &ty)) {
+        if (!validPosition(tx, ty) || field[fieldIndex(tx, ty)] != 0) {
+          NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
+        } else {
+          *ptx = tx;
+          *pty = ty;
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 NSMutableArray* countBubbles(const int* field, int x, int y, int c, int miny) {

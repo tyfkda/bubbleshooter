@@ -56,8 +56,7 @@ int fieldIndex(int x, int y);
 // Whether the position is valid.
 bool validPosition(int x, int y);
 
-// Check bubble hits to field bubble.
-bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, int* px, int* py);
+bool hitFieldCheck(const int* field, int x, int y, int r, int* ptx, int* pty);
 
 // Counts same color bubbles.
 NSMutableArray* countBubbles(const int* field, int x, int y, int c, int miny);

@@ -46,7 +46,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   STAssertTrue(validPosition(0, FIELDH - 1), nil);
 }
 
-- (void)testHitFieldBubble {
+- (void)testHitFieldCheck {
   const int X = 7;
   const int O = 1;
   const int _ = 0;
@@ -68,11 +68,11 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
     _,_,_,_,_,_,_,_,_,_,
   };
   int px, py;
-  int bubbleX = W * 5 + R + 1, bubbleY = H * 6 + 2 * R - 1;
-  STAssertTrue(hitFieldBubble(field, 5, 6, bubbleX, bubbleY, R + R, &px, &py), nil);
+  int bubbleX = W * 5 + R + 1, bubbleY = H * 6 + 3 * R;
+  STAssertFalse(hitFieldCheck(field, bubbleX, bubbleY + 1, 2 * R, &px, &py), nil);
+  STAssertTrue(hitFieldCheck(field, bubbleX, bubbleY - 1, 2 * R, &px, &py), nil);
   STAssertEquals(5, px, nil);
   STAssertEquals(7, py, nil);
-  STAssertFalse(hitFieldBubble(field, 5, 0, bubbleX, bubbleY, R + R, &px, &py), nil);
 }
 
 - (void)testCountBubbles {
