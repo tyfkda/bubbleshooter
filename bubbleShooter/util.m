@@ -134,66 +134,36 @@ void addAdjacentPositions(NSMutableArray* seeds, int x, int y) {
 }
 
 // Checks bubbles fall.
-static void fallCheckSub(const int* field, int seedPosition, int* checked, NSMutableArray* buffer) {
-  const int NOT_FALL = 1;
-  const int CHECKED = 2;
-  const int FALLED = 3;
-  
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
-  [seeds addObject:[NSNumber numberWithInt:seedPosition]];
-  
+NSMutableArray* fallCheck(const int* field) {
+  NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] init];
+  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:FIELDW];
+  for (int x = 0; x < FIELDW; ++x) {
+    [seeds addObject:[NSNumber numberWithInt:fieldIndex(x, 0)]];
+  }
+
+  bool checked[FIELDW * FIELDH];
+  for (int i = 0; i < FIELDW * FIELDH; checked[i++] = false);
+
   for (int i = 0; i < [seeds count]; ++i) {
     int position = [[seeds objectAtIndex:i] intValue];
-    if (field[position] == 0 || checked[position] >= CHECKED) {
+    if (field[position] == 0 || checked[position])
       continue;
-    }
-    
-    int x = position % FIELDW;
-    int y = position / FIELDW;
-    if (y == 0)
-      checked[position] = NOT_FALL;
-    if (checked[position] == NOT_FALL) {
-      // These bubbles are not fall.
-      for (int j = 0; j < [seeds count]; ++j) {
-        int position = [[seeds objectAtIndex:j] intValue];
-        if (field[position] == 0)
-          continue;
-        checked[position] = NOT_FALL;
-      }
-      return;
-    }
-    
-    checked[position] = CHECKED;
-    addAdjacentPositions(seeds, x, y);
-  }
-  
-  // Not sticked with ceil. Fall all bubbles.
-  for (int i = 0; i < [seeds count]; ++i) {
-    NSNumber *positionNumber = [seeds objectAtIndex:i];
-    int position = [positionNumber intValue];
-    if (field[position] == 0 || checked[position] == FALLED)
-      continue;
-    
-    [buffer addObject:positionNumber];
-    checked[position] = FALLED;
-  }
-}
 
-// Checks bubbles fall.
-void fallCheck(const int* field, NSMutableArray* erasedBubbles, NSMutableArray* cutoffBubbles) {
-  NSMutableArray* seeds = [[NSMutableArray alloc] initWithCapacity:6];
-  int checked[FIELDW * FIELDH];
-  for (int k = 0; k < FIELDW * FIELDH; checked[k++] = 0);
-  for (int i = 0; i < [erasedBubbles count]; ++i) {
-    int position = [[erasedBubbles objectAtIndex:i] intValue];
+    checked[position] = true;
     int x = position % FIELDW;
     int y = position / FIELDW;
-    [seeds removeAllObjects];
     addAdjacentPositions(seeds, x, y);
-    for (int j = 0; j < [seeds count]; ++j) {
-      fallCheckSub(field, [[seeds objectAtIndex:j] intValue], checked, cutoffBubbles);
+  }
+
+  for (int y = 0; y < FIELDH; ++y) {
+    for (int x = 0; x < FIELDW - (y & 1); ++x) {
+      int position = fieldIndex(x, y);
+      if (field[position] == 0 || checked[position])
+        continue;
+      [cutoffBubbles addObject:[NSNumber numberWithInt:position]];
     }
   }
+  return cutoffBubbles;
 }
 
 void drawBubble(CGContextRef context, float x, float y, int type) {

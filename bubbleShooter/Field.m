@@ -233,9 +233,7 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
     [self eraseBubbles:bubbles];
     //int y = bubble->y - _scrolly / 1024;
 
-    NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] initWithCapacity:6];
-    fallCheck(_field, bubbles, cutoffBubbles);
-    
+    NSMutableArray* cutoffBubbles = fallCheck(_field);
     int cutoff_count = [cutoffBubbles count];
     if (cutoff_count > 0) {
       for (int i = 0; i < [cutoffBubbles count]; ++i) {

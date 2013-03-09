@@ -50,7 +50,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   const int X = 7;
   const int O = 1;
   const int _ = 0;
-  const int field[] = {
+  const int field[FIELDW * FIELDH] = {
     X,X,X,X,X,X,X,X,X,X,
      X,X,X,X,X,X,X,X,X,  _,
     X,X,X,X,X,X,X,X,X,X,
@@ -80,7 +80,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   const int O = 1;
   const int B = 2;
   const int _ = 0;
-  const int field[] = {
+  const int field[FIELDW * FIELDH] = {
     X,X,X,X,X,X,X,X,X,X,
      X,X,X,X,X,X,X,X,X,  _,
     X,X,X,X,X,X,X,X,X,X,
@@ -130,7 +130,7 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
 - (void)testFallCheck {
   const int O = 1;
   const int _ = 0;
-  const int field[] = {
+  const int field[FIELDW * FIELDH] = {
     O,O,O,O,O,O,O,O,O,O,
      O,O,O,O,O,O,O,O,O,  _,
     O,O,O,O,O,O,O,O,O,O,
@@ -147,14 +147,8 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
      _,_,_,_,_,_,_,_,_,  _,
     _,_,_,_,_,_,_,_,_,_,
   };
-  NSMutableArray* erasedBubbles = [[NSMutableArray alloc] init];
-  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(0, 3)]];
-  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(1, 4)]];
-  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(1, 5)]];
-  [erasedBubbles addObject:[NSNumber numberWithInt:fieldIndex(2, 6)]];
   
-  NSMutableArray* cutoffBubbles = [[NSMutableArray alloc] init];
-  fallCheck(field, erasedBubbles, cutoffBubbles);
+  NSMutableArray* cutoffBubbles = fallCheck(field);
   STAssertEquals(4, (int)[cutoffBubbles count], nil);
   
   const int expected[] = {
