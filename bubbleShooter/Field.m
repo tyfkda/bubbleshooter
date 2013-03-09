@@ -15,10 +15,6 @@ enum {
   kGameOver,
 };
 
-const float BUBBLE_VELOCITY = 12;
-const float BUBBLE_X = WIDTH / 2;
-const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
-
 @implementation Field
 
 - (int)getScore { return _score; }
@@ -45,6 +41,10 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
   _time = 0;
   _scrolly = -3 * H * 1024;
   _scrollSpeed = 1024 / (2 * 60) * 4;
+}
+
+- (void)setField:(const int*)field {
+  memcpy(_field, field, sizeof(_field));
 }
 
 - (void)setRandomLine: (int)y {
@@ -117,30 +117,30 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
     default:
       break;
     case kPlaying:
-      if ([self shotBubble: pos x:BUBBLE_X y:BUBBLE_Y c:_nextc[0]] != NULL) {
-        //AudioServicesPlaySystemSound(_shootSoundId);
-        [self shiftNext];
+    {
+      Bubble* bubble = NULL;
+      for (int i = 0; i < MAX_SHOT; ++i) {
+        if (!_bubbles[i].active) {
+          bubble = &_bubbles[i];
+          break;
+        }
       }
-      break;
+      if (bubble != NULL) {
+        if ([self shotBubble:bubble pos:pos x:BUBBLE_X y:BUBBLE_Y c:_nextc[0]]) {
+          //AudioServicesPlaySystemSound(_shootSoundId);
+          [self shiftNext];
+        }
+      }
+    } break;
   }
 }
 
-- (Bubble*)shotBubble:(CGPoint)pos x:(float)x y:(float)y c:(int)c {
-  Bubble* bubble = NULL;
-  for (int i = 0; i < MAX_SHOT; ++i) {
-    if (!_bubbles[i].active) {
-      bubble = &_bubbles[i];
-      break;
-    }
-  }
-  if (bubble == NULL)
-    return NULL;
-
+- (bool)shotBubble:(Bubble*)bubble pos:(CGPoint)pos x:(float)x y:(float)y c:(int)c {
   float dx = (pos.x - FIELDX) - x;
   float dy = (pos.y - FIELDY) - y;
   const int tan5 = 87;
   if (dy >= 0 || (dx != 0 && 1000 * abs(dy) / abs(dx) < tan5))
-    return NULL;
+    return false;
 
   float l = sqrt(dx * dx + dy * dy);
   bubble->active = true;
@@ -149,7 +149,7 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
   bubble->c = c;
   bubble->vx = dx * BUBBLE_VELOCITY / l;
   bubble->vy = dy * BUBBLE_VELOCITY / l;
-  return bubble;
+  return true;
 }
 
 - (void)setGameOver {
@@ -225,8 +225,8 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
         int x = position % FIELDW;
         int y = position / FIELDW;
         
-        int xx = x * W + (y & 1) * W / 2 + W / 2;
-        int yy = y * H + W / 2;
+        int xx = x * W + (y & 1) * R + R;
+        int yy = y * H + R;
         float vx = (float)(xx - bubble->x) / 10;
         float vy = (float)(yy - bubble->y) / 10;
         FallEffect* effect = [[FallEffect alloc] init];
@@ -254,14 +254,16 @@ const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 
 // Erase bubbles.
 - (void)eraseBubbles:(NSMutableArray*)bubbles {
+  const int offsetX = R + FIELDX;
+  const int offsetY = R + _scrolly / 1024 + FIELDY;
   for (int i = 0; i < [bubbles count]; ++i) {
     int position = [[bubbles objectAtIndex:i] intValue];
     int c = _field[position];
     _field[position] = 0;
     
     int x = position % FIELDW, y = position / FIELDW;
-    int xx = x * W + (y & 1) * R + R + FIELDX;
-    int yy = y * H + R + _scrolly / 1024 + FIELDY;
+    int xx = x * W + (y & 1) * R + offsetX;
+    int yy = y * H + R + offsetY;
     DisappearEffect* effect = [[DisappearEffect alloc] init];
     [effect initialize: xx y:yy c:c r:R];
     [_effects addObject:effect];

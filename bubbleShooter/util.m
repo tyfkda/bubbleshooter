@@ -63,13 +63,13 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-static bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int radius, int* px, int* py) {
+static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, int radius, int* px, int* py) {
   if (!validPosition(bx, by) ||
       field[fieldIndex(bx, by)] == 0)
     return false;
   
-  int target_x = bx * W + (by & 1) * W / 2 + W / 2;
-  int target_y = by * H + W / 2;
+  int target_x = bx * W + (by & 1) * R + R;
+  int target_y = by * H + R;
   int dx = x - target_x;
   int dy = y - target_y;
   if (dx * dx + dy * dy > radius * radius)
@@ -91,13 +91,13 @@ static bool hitFieldBubble(const int* field, int bx, int by, int x, int y, int r
 }
 
 // Check bubble hits other bubble in the field.
-bool hitFieldCheck(const int* field, int x, int y, int r, int* ptx, int* pty) {
+bool hitFieldCheck(const int* field, float x, float y, int r, int* ptx, int* pty) {
   int tx, ty;
   for (int by = (y - R - 2 * R) / H; by <= (y + R - 2 * R) / H; ++by) {
     for (int bx = (x - R - (by & 1) * R) / W; bx <= (x + R - (by & 1) * R) / W; ++bx) {
       if (hitFieldBubble(field, bx, by, x, y, r, &tx, &ty)) {
         if (!validPosition(tx, ty) || field[fieldIndex(tx, ty)] != 0) {
-          NSLog(@"Invalid hit position: (%d,%d)", tx, ty);
+          [NSException raise:@"Invalid hit position" format:@"pos(%d,%d), base(%d,%d), bubble(%.1f,%.1f)", tx, ty, bx, by, x, y];
         } else {
           *ptx = tx;
           *pty = ty;

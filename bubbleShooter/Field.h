@@ -9,14 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "util.h"
 
+static const int MAX_SHOT = 2;
+static const float BUBBLE_VELOCITY = 12;
+static const float BUBBLE_X = WIDTH / 2;
+static const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
+
 typedef struct {
   bool active;
   float x, y;    // Position.
   int c;          // Type.
   float vx, vy;  // Velocity.
 } Bubble;
-
-static const int MAX_SHOT = 2;
 
 @interface Field : NSObject {
   int _field[FIELDW * FIELDH];
@@ -44,5 +47,10 @@ static const int MAX_SHOT = 2;
 - (int)getScore;
 - (int)getTime;
 - (bool)isGameOver;
+
+// For test.
+- (void)setField:(const int*)field;
+- (bool)shotBubble:(Bubble*)bubble pos:(CGPoint)pos x:(float)x y:(float)y c:(int)c;
+- (bool)moveBubble: (Bubble*) bubble;
 
 @end
