@@ -264,7 +264,7 @@ enum {
     
     int x = position % FIELDW, y = position / FIELDW;
     int xx = x * W + (y & 1) * R + offsetX;
-    int yy = y * H + R + offsetY;
+    int yy = y * H + offsetY;
     DisappearEffect* effect = [[DisappearEffect alloc] init];
     [effect initialize: xx y:yy c:c r:R];
     [_effects addObject:effect];
