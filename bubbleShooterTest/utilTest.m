@@ -69,8 +69,8 @@ static NSComparisonResult cmp(id obj1, id obj2, void* _) {
   };
   int px, py;
   int bubbleX = W * 5 + R + 1, bubbleY = H * 6 + 3 * R;
-  STAssertFalse(hitFieldCheck(field, bubbleX, bubbleY + 1, 2 * R, &px, &py), nil);
-  STAssertTrue(hitFieldCheck(field, bubbleX, bubbleY - 1, 2 * R, &px, &py), nil);
+  STAssertFalse(hitFieldCheck(field, bubbleX, bubbleY + 1 + 10, 2 * R, 0, -10, &px, &py), nil);
+  STAssertTrue(hitFieldCheck(field, bubbleX, bubbleY - 1 + 10, 2 * R, 0, -10, &px, &py), nil);
   STAssertEquals(5, px, nil);
   STAssertEquals(7, py, nil);
 }

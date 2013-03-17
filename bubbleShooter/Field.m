@@ -187,6 +187,14 @@ enum {
   if (!bubble->active)
     return true;
 
+  int tx, ty;
+  int y = bubble->y - _scrolly / 1024;
+  if (hitFieldCheck(_field, bubble->x, y, R + R - 4, bubble->vx, bubble->vy, &tx, &ty)) {
+    [self setBubble: bubble tx:tx ty:ty];
+    bubble->active = false;
+    return false;
+  }
+
   bubble->x += bubble->vx;
   bubble->y += bubble->vy;
   if (bubble->x < R || bubble->x > FIELDW * W - R)
@@ -198,13 +206,6 @@ enum {
     return true;
   }
 
-  int tx, ty;
-  int y = bubble->y - _scrolly / 1024;
-  if (hitFieldCheck(_field, bubble->x, y, R + R - 4, &tx, &ty)) {
-    [self setBubble: bubble tx:tx ty:ty];
-    bubble->active = false;
-    return false;
-  }
   return true;
 }
 

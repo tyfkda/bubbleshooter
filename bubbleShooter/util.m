@@ -52,6 +52,21 @@ void drawLine(CGContextRef context, float x0, float y0, float x1, float y1) {
   CGContextStrokePath(context);
 }
 
+static float intersectRayCircle(float ox, float oy, float dx, float dy, float cx, float cy, float radius) {
+  float vx = ox - cx, vy = oy - cy;
+  float a = dx * dx + dy * dy;
+  float b = dx * vx + dy * vy;
+  float c = vx * vx + vy * vy - radius * radius;
+  float d = b * b - a * c;
+  if (d >= 0) {
+    float s = sqrt(d);
+    float t = (-b - s) / a;
+    if (t <= 0)  t = (-b + s) / a;
+    return t;
+  }
+  return -1;
+}
+
 ////////////////////////////////////////////////////////////////////
 // Application specific utility functions
 
@@ -63,17 +78,23 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, int radius, int* px, int* py) {
+static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, int radius, float vx, float vy, int* px, int* py) {
   if (!validPosition(bx, by) ||
       field[fieldIndex(bx, by)] == 0)
     return false;
-  
+
   int target_x = bx * W + (by & 1) * R + R;
   int target_y = by * H + R;
-  int dx = x - target_x;
-  int dy = y - target_y;
-  if (dx * dx + dy * dy > radius * radius)
+  float t = intersectRayCircle(x, y, vx, vy, target_x, target_y, radius);
+  if (t < 0)
     return false;
+  if (t * t > 1)
+    return false;
+
+  float hx = x + vx * t;
+  float hy = y + vy * t;
+  float dx = hx - target_x;
+  float dy = hy - target_y;
   
   // Hit a bubble.
   int tx = bx, ty = by;
@@ -91,11 +112,11 @@ static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, i
 }
 
 // Check bubble hits other bubble in the field.
-bool hitFieldCheck(const int* field, float x, float y, int r, int* ptx, int* pty) {
+bool hitFieldCheck(const int* field, float x, float y, int r, float vx, float vy, int* ptx, int* pty) {
   int tx, ty;
   for (int by = (y - R - 2 * R) / H; by <= (y + R - 2 * R) / H; ++by) {
     for (int bx = (x - R - (by & 1) * R) / W; bx <= (x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(field, bx, by, x, y, r, &tx, &ty)) {
+      if (hitFieldBubble(field, bx, by, x, y, r, vx, vy, &tx, &ty)) {
         if (!validPosition(tx, ty) || field[fieldIndex(tx, ty)] != 0) {
           [NSException raise:@"Invalid hit position" format:@"pos(%d,%d), base(%d,%d), bubble(%.1f,%.1f)", tx, ty, bx, by, x, y];
         } else {
