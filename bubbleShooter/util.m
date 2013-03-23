@@ -78,7 +78,12 @@ bool validPosition(int x, int y) {
   return 0 <= y && y < FIELDH && 0 <= x && x < FIELDW - (y & 1);
 }
 
-static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, int radius, float vx, float vy, int* px, int* py) {
+typedef struct {
+  float t;
+  int bx, by;
+} HitInfo;
+
+static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, int radius, float vx, float vy, HitInfo* hitinfo) {
   if (!validPosition(bx, by) ||
       field[fieldIndex(bx, by)] == 0)
     return false;
@@ -88,8 +93,20 @@ static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, i
   float t = intersectRayCircle(x, y, vx, vy, target_x, target_y, radius);
   if (t < 0)
     return false;
-  if (t * t > 1)
+  if (t >= hitinfo->t)
     return false;
+  
+  hitinfo->t = t;
+  hitinfo->bx = bx;
+  hitinfo->by = by;
+  return true;
+}
+
+static void calcHitPos(const int* field, float x, float y, float vx, float vy, const HitInfo* hitinfo, int* px, int* py) {
+  const float t = hitinfo->t;
+  const int bx = hitinfo->bx, by = hitinfo->by;
+  const int target_x = bx * W + (by & 1) * R + R;
+  const int target_y = by * H + R;
 
   float hx = x + vx * t;
   float hy = y + vy * t;
@@ -105,28 +122,42 @@ static bool hitFieldBubble(const int* field, int bx, int by, float x, float y, i
     tx += (dx >= 0) ? 0 : -1;
     if (by & 1)
       ++tx;
+    if (tx < 0)
+      ++tx;
+    if (tx >= FIELDW - (ty & 1))
+      --tx;
   }
   *px = tx;
   *py = ty;
-  return true;
 }
 
 // Check bubble hits other bubble in the field.
 bool hitFieldCheck(const int* field, float x, float y, int r, float vx, float vy, int* ptx, int* pty) {
-  int tx, ty;
-  for (int by = (y - R - 2 * R) / H; by <= (y + R - 2 * R) / H; ++by) {
-    for (int bx = (x - R - (by & 1) * R) / W; bx <= (x + R - (by & 1) * R) / W; ++bx) {
-      if (hitFieldBubble(field, bx, by, x, y, r, vx, vy, &tx, &ty)) {
-        if (!validPosition(tx, ty) || field[fieldIndex(tx, ty)] != 0) {
-          [NSException raise:@"Invalid hit position" format:@"pos(%d,%d), base(%d,%d), bubble(%.1f,%.1f)", tx, ty, bx, by, x, y];
-        } else {
-          *ptx = tx;
-          *pty = ty;
-          return true;
-        }
-      }
+  HitInfo hitinfo;
+  hitinfo.t = 1;
+  hitinfo.bx = hitinfo.by = -1;
+
+  const float x0 = MIN(x, x + vx), y0 = MIN(y, y + vy);
+  const float x1 = MAX(x, x + vx), y1 = MAX(y, y + vy);
+  for (int by = (y0 - R - 2 * R) / H - 1; by <= (y1 + R - 2 * R) / H + 1; ++by) {
+    for (int bx = (x0 - R - (by & 1) * R) / W; bx <= (x1 + R - (by & 1) * R) / W; ++bx) {
+      hitFieldBubble(field, bx, by, x, y, r, vx, vy, &hitinfo);
     }
   }
+
+  if (hitinfo.bx >= 0 && hitinfo.by >= 0) {
+    int tx, ty;
+    calcHitPos(field, x, y, vx, vy, &hitinfo, &tx, &ty);
+    
+    if (!validPosition(tx, ty) || field[fieldIndex(tx, ty)] != 0) {
+      [NSException raise:@"Invalid hit position" format:@"pos(%d,%d), base(%d,%d), bubble(%.1f,%.1f), vel(%.1f,%.1f), t:%.4f", tx, ty, hitinfo.bx, hitinfo.by, x, y, vx, vy, hitinfo.t];
+    } else {
+      *ptx = tx;
+      *pty = ty;
+      return true;
+    }
+  }
+
   return false;
 }
 

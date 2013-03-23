@@ -54,9 +54,13 @@
     pos.y = H * 7 + R;
     STAssertTrue([_field shotBubble:&bubble pos:pos x:BUBBLE_X y:BUBBLE_Y c:O], nil);
     // Confirm that moving bubble does not rise exception.
-    while ([_field moveBubble: &bubble]) {
-      // loop.
-    }
+    NS_DURING
+      while ([_field moveBubble: &bubble]) {
+        // loop.
+      }
+    NS_HANDLER
+      STFail(@"%@: ix=%d, %@", [localException name], ix, [localException reason]);
+    NS_ENDHANDLER
   }
 }
 
