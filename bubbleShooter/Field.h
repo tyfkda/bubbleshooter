@@ -10,7 +10,7 @@
 #import "util.h"
 
 static const int MAX_SHOT = 2;
-static const float BUBBLE_VELOCITY = 12;
+static const float BUBBLE_VELOCITY = 24;
 static const float BUBBLE_X = WIDTH / 2;
 static const float BUBBLE_Y = H * (FIELDH - 1) + R - 2 * H;
 

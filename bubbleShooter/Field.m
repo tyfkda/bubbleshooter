@@ -187,24 +187,53 @@ enum {
   if (!bubble->active)
     return true;
 
-  int tx, ty;
-  int y = bubble->y - _scrolly / 1024;
-  if (hitFieldCheck(_field, bubble->x, y, R + R - 4, bubble->vx, bubble->vy, &tx, &ty)) {
-    [self setBubble: bubble tx:tx ty:ty];
-    bubble->active = false;
-    return false;
-  }
+  float vx = bubble->vx, vy = bubble->vy;
+  bool again;
+  do {
+    again = false;
 
-  bubble->x += bubble->vx;
-  bubble->y += bubble->vy;
-  if (bubble->x < R || bubble->x > FIELDW * W - R)
-    bubble->vx = -bubble->vx;
-  if (bubble->y < R)
-    bubble->vy = -bubble->vy;
-  if (bubble->y > HEIGHT + R) {
-    bubble->active = false;
-    return true;
-  }
+    int tx, ty;
+    int y = bubble->y - _scrolly / 1024;
+    if (hitFieldCheck(_field, bubble->x, y, R + R - 4, vx, vy, &tx, &ty)) {
+      [self setBubble: bubble tx:tx ty:ty];
+      bubble->active = false;
+      return false;
+    }
+
+    bubble->x += vx;
+    bubble->y += vy;
+    if (bubble->x < R && vx < 0) {
+      float t = (R - bubble->x) / -vx;
+      bubble->x = R;
+      bubble->y -= t * vy;
+      bubble->vx = -bubble->vx;
+      vx *= -t;
+      vy *= t;
+      again = true;
+    }
+    if (bubble->x > FIELDW * W - R && vx > 0) {
+      float t = (bubble->x - (FIELDW * W - R)) / vx;
+      bubble->x = FIELDW * W - R;
+      bubble->y -= t * vy;
+      bubble->vx = -bubble->vx;
+      vx *= -t;
+      vy *= t;
+      again = true;
+    }
+    if (bubble->y < R && vy < 0) {
+      float t = (R - bubble->y) / -vy;
+      bubble->y = R;
+      bubble->x -= t * vx;
+      bubble->vy = -bubble->vy;
+      vx *= t;
+      vy *= -t;
+      again = true;
+    }
+    if (bubble->y > HEIGHT + R) {
+      bubble->active = false;
+      return true;
+    }
+  } while (again);
 
   return true;
 }

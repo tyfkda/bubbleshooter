@@ -23,7 +23,7 @@ static const int FIELDX = (WIDTH - W * FIELDW) / 2;
 static const int FIELDY = 14;
 
 // Number of bubble colors.
-static const int kColorBubbles = 4;  //6;
+static const int kColorBubbles = 6;
 
 // Returns random integer.
 int randi(int min, int max);
